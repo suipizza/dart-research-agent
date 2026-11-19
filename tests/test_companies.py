@@ -35,3 +35,32 @@ def test_multiple_companies_for_comparison():
 
 def test_no_company():
     assert find_companies("최근 자사주 소각한 회사", LOOKUP) == []
+
+
+SK_GROUP = {
+    "SK": "00181712",
+    "SK하이닉스": "00164779",
+    "SK스퀘어": "01596425",
+    "SK이노베이션": "00631518",
+    "SK텔레콤": "00159023",
+    "LG": "00120021",
+    "LG전자": "00401731",
+    "케이티앤지": "00244455",
+}
+SK_LOOKUP = build_lookup(SK_GROUP)
+
+
+def test_sk_family_is_not_confused():
+    assert find_companies("SK스퀘어 자사주", SK_LOOKUP) == ["01596425"]
+    assert find_companies("SK이노 유상증자", SK_LOOKUP) == ["00631518"]
+    assert find_companies("SKT 배당", SK_LOOKUP) == ["00159023"]
+    assert find_companies("SK 지주사 배당", SK_LOOKUP) == ["00181712"]
+    assert find_companies("하이닉스 실적", SK_LOOKUP) == ["00164779"]
+
+
+def test_lg_electronics_is_not_lg_holdings():
+    assert find_companies("LG전자 3분기 영업이익", SK_LOOKUP) == ["00401731"]
+
+
+def test_alias_with_symbol():
+    assert find_companies("KT&G 배당", SK_LOOKUP) == ["00244455"]

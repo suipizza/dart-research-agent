@@ -22,7 +22,7 @@ uv run python -m app.ingest.collect documents    # 단계별 실행: filings / d
 
 | 수집 대상 | 범위 |
 |---|---|
-| 기업 | 코스피 대형주 30개 ([data/companies.csv](data/companies.csv), 2026-11 기준 고정) |
+| 기업 | 코스피 시가총액 상위 40개 전체 + 4개 = 44개 ([data/companies.csv](data/companies.csv), 2026-11-18 종가 기준 고정, 보통주) |
 | 기간 | 2024-01-01 ~ 현재 |
 | 공시 목록 | 대상 기업의 전체 공시 메타데이터 |
 | 공시 원문 | 자기주식 취득·처분, 유상·무상증자, 합병·분할, 타법인 주식 취득, 신규 시설 투자, 영업(잠정)실적, 배당, 주식 소각 |
