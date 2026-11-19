@@ -21,6 +21,7 @@ node_modules/
 data/raw/
 data/cache/
 *.zip
+!tests/fixtures/*.zip
 *.log
 
 # OS / editor
