@@ -1,17 +1,20 @@
 """DB 테이블 정의.
 
-companies ─┬─< filings ──── documents          (공시 목록 / 원문 텍스트)
+companies ─┬─< filings ──── documents ──< chunks   (공시 목록 / 원문 / 검색 단위+벡터)
            │      └───────< structured_events  (주요사항 핵심 필드 = 숫자 검증의 정답지)
            └─< financials                      (재무제표 주요 계정)
 """
 
 from datetime import date, datetime
 
-from sqlalchemy import BigInteger, Boolean, Date, DateTime, ForeignKey, String, Text, func
+from pgvector.sqlalchemy import Vector
+from sqlalchemy import BigInteger, Boolean, Date, DateTime, ForeignKey, Index, String, Text, func
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db import Base
+
+EMBEDDING_DIM = 1024  # bge-m3
 
 
 class Company(Base):
@@ -62,6 +65,35 @@ class StructuredEvent(Base):
     api: Mapped[str] = mapped_column(String(40), primary_key=True)  # 예: tsstkAqDecsn
     corp_code: Mapped[str] = mapped_column(ForeignKey("companies.corp_code"), index=True)
     payload: Mapped[dict] = mapped_column(JSONB)
+
+
+class Chunk(Base):
+    """검색 단위. 원문(documents)을 잘라 임베딩한 것.
+
+    corp_code·rcept_dt·category는 filings와 중복이지만, 벡터 검색과 같은 테이블에서
+    바로 필터하려고 함께 둔다(JOIN 없이 WHERE + ORDER BY embedding <=> ...).
+    """
+
+    __tablename__ = "chunks"
+    __table_args__ = (
+        Index(
+            "ix_chunks_embedding_hnsw",
+            "embedding",
+            postgresql_using="hnsw",
+            postgresql_with={"m": 16, "ef_construction": 64},
+            postgresql_ops={"embedding": "vector_cosine_ops"},
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    rcept_no: Mapped[str] = mapped_column(ForeignKey("documents.rcept_no"), index=True)
+    chunk_index: Mapped[int]
+    corp_code: Mapped[str] = mapped_column(String(8), index=True)
+    rcept_dt: Mapped[date] = mapped_column(Date, index=True)
+    category: Mapped[str] = mapped_column(String(40), index=True)
+    section: Mapped[str] = mapped_column(String(300))
+    text: Mapped[str] = mapped_column(Text)  # 임베딩한 텍스트 그대로 (머리말 포함 여부는 설정 따름)
+    embedding: Mapped[list[float]] = mapped_column(Vector(EMBEDDING_DIM))
 
 
 class Financial(Base):
