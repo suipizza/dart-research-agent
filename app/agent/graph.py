@@ -217,6 +217,17 @@ def build_graph():
 
 _GRAPH = None
 
+# 진행 상황을 화면에 보여줄 때 쓰는 이름 (trace의 첫 단어 → 사용자용 문구)
+STEP_LABELS = {
+    "analyze": "질문 분석",
+    "refuse": "답변 범위 확인",
+    "financial": "재무 데이터 조회",
+    "retrieve": "공시 검색",
+    "generate": "답변 작성",
+    "verify": "숫자 검증",
+    "retry": "다시 확인",
+}
+
 
 @dataclass
 class AgentResult:
@@ -228,29 +239,70 @@ class AgentResult:
     model: str
     trace: list[str]
     usage: Usage = field(default_factory=Usage)
+    sources: list[dict] = field(default_factory=list)  # 화면 출처 패널용
 
 
-def run_agent(question: str, model: str = EXPERIMENT_MODEL) -> AgentResult:
+def _graph():
     global _GRAPH
     if _GRAPH is None:
         _GRAPH = build_graph()
-    usage = Usage()
-    final: State = _GRAPH.invoke(
-        {"question": question, "model": model, "usage": usage, "trace": []}
-    )
+    return _GRAPH
+
+
+def _result(question: str, model: str, final: State, usage: Usage) -> AgentResult:
     evidence = final.get("evidence", [])
     out = final["out"]
     cited = [evidence[i - 1].rcept_no for i in out.citations if 1 <= i <= len(evidence)]
+    cited = [c for c in dict.fromkeys(cited) if c]
+    titles = {e.rcept_no: e.title for e in evidence}
+    sources = [
+        {
+            "rcept_no": c,
+            "title": titles.get(c, ""),
+            "url": f"https://dart.fss.or.kr/dsaf001/main.do?rcpNo={c}",
+        }
+        for c in cited
+    ]
     return AgentResult(
         question=question,
         answer=out.answer,
         unanswerable=out.unanswerable,
-        cited_rcept_nos=[c for c in dict.fromkeys(cited) if c],
+        cited_rcept_nos=cited,
         evidence_text=format_evidence(evidence),
         model=model,
         trace=final.get("trace", []),
         usage=usage,
+        sources=sources,
     )
+
+
+def run_agent(question: str, model: str = EXPERIMENT_MODEL) -> AgentResult:
+    usage = Usage()
+    final: State = _graph().invoke(
+        {"question": question, "model": model, "usage": usage, "trace": []}
+    )
+    return _result(question, model, final, usage)
+
+
+def run_agent_stream(question: str, model: str = EXPERIMENT_MODEL):
+    """진행 단계를 하나씩 내보내고 마지막에 결과를 내보내는 제너레이터.
+
+    yield ("step", {"node": ..., "label": ..., "detail": ...})  노드가 끝날 때마다
+    yield ("result", AgentResult)                                  마지막 한 번
+    """
+    usage = Usage()
+    seen = 0
+    final: State | None = None
+    inputs = {"question": question, "model": model, "usage": usage, "trace": []}
+    for state in _graph().stream(inputs, stream_mode="values"):
+        final = state
+        trace = state.get("trace", [])
+        for entry in trace[seen:]:
+            node = entry.split(":")[0].split(" ")[0]
+            yield "step", {"node": node, "label": STEP_LABELS.get(node, node), "detail": entry}
+        seen = len(trace)
+    assert final is not None
+    yield "result", _result(question, model, final, usage)
 
 
 def main() -> None:

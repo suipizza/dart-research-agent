@@ -25,6 +25,12 @@ class Settings(BaseSettings):
     anthropic_api_key: SecretStr | None = None
 
     database_url: str = "postgresql+psycopg://dart:dart@localhost:5432/dart"
+    redis_url: str = "redis://localhost:6379/0"
+
+    # 공개 데모 비용 보호 (캐시에서 나간 답은 세지 않는다)
+    rate_limit_per_ip_daily: int = 20
+    rate_limit_global_daily: int = 500
+    cache_ttl_seconds: int = 7 * 24 * 3600
     dart_base_url: str = "https://opendart.fss.or.kr/api"
 
 

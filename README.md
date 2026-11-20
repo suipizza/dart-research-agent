@@ -47,6 +47,29 @@ uv run python -m app.rag.search "SK하이닉스 2026년 3분기 영업이익"   
 - **회사 필터**: 질문에서 회사명(별칭 포함)을 찾으면 `WHERE corp_code = ...`로 고정한 뒤 그 안에서 코사인 거리순 정렬. 벡터 검색은 '삼성전자'와 '삼성SDI'를 잘 구분하지 못한다.
 - **인덱스**: pgvector HNSW (`vector_cosine_ops`).
 
+## API (FastAPI)
+
+```bash
+docker compose up -d                              # Postgres + Redis
+uv run uvicorn app.api.main:app --port 8000       # http://127.0.0.1:8000/docs (Swagger)
+```
+
+| 메서드 | 경로 | 설명 |
+|---|---|---|
+| POST | `/ask` | 질문 → 에이전트. `stream: true`(기본)면 SSE로 진행 단계(`step`) → 답변·출처(`result`) → `done` |
+| GET | `/companies` | 수집 대상 기업 44개 |
+| GET | `/health` | 서버·DB·Redis 상태 |
+
+```bash
+curl -N -X POST 127.0.0.1:8000/ask -H 'Content-Type: application/json' \
+  -d '{"question": "현대차 2026년 3분기 영업이익은?"}'
+```
+
+- **스트리밍**: 답변은 JSON 스키마로 한 번에 생성되므로 글자 단위 대신 실제 진행 단계(질문 분석 → 재무 데이터 조회 → 공시 검색 → 답변 작성 → 숫자 검증)를 실시간으로 보낸다.
+- **캐시 (Redis)**: 공백·물음표를 정리한 질문 + 모델 + 에이전트 버전으로 키를 만든다. 같은 질문은 27.7초 → 0.14초, API 비용 0원. 7일 보관.
+- **호출 제한 (Redis)**: IP당 하루 20회, 전체 하루 500회 (캐시 응답은 세지 않음). 초과 시 429.
+- Redis가 꺼져도 캐시·제한 없이 동작(fail-open).
+
 ## 평가
 
 ```bash

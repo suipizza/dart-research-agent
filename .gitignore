@@ -31,3 +31,6 @@ data/cache/
 
 # Personal planning notes (local only)
 PROJECT_BRIEF.md
+
+# Local tool config
+.claude/
