@@ -15,6 +15,8 @@ from app.rag.chunker import DEFAULT_MAX_CHARS, ChunkMeta, chunk_document
 
 log = logging.getLogger("index")
 
+BATCH_DOCS = 100  # 이만큼마다 저장 (중간에 멈춰도 이어서 할 수 있게)
+
 
 def build(
     rebuild: bool = False,
@@ -47,39 +49,53 @@ def build(
             .limit(limit_docs)
         ).all()
 
-    pending = []
-    for rcept_no, text, filing, corp_name in rows:
-        meta = ChunkMeta(corp_name, filing.rcept_dt.isoformat(), filing.report_nm)
-        for c in chunk_document(
-            text,
-            meta,
-            max_chars=max_chars,
-            with_header=with_header,
-            repeat_table_header=repeat_table_header,
-        ):
-            pending.append(
-                {
-                    "rcept_no": rcept_no,
-                    "chunk_index": c.index,
-                    "corp_code": filing.corp_code,
-                    "rcept_dt": filing.rcept_dt,
-                    "category": filing.category,
-                    "section": c.section[:300],
-                    "text": c.text,
-                    **({"variant": variant} if variant else {}),
-                }
-            )
-    log.info("documents %d → chunks %d", len(rows), len(pending))
-    if not pending:
-        return
+    def to_rows(batch) -> list[dict]:
+        out = []
+        for rcept_no, text, filing, corp_name in batch:
+            meta = ChunkMeta(corp_name, filing.rcept_dt.isoformat(), filing.report_nm)
+            for c in chunk_document(
+                text,
+                meta,
+                max_chars=max_chars,
+                with_header=with_header,
+                repeat_table_header=repeat_table_header,
+            ):
+                out.append(
+                    {
+                        "rcept_no": rcept_no,
+                        "chunk_index": c.index,
+                        "corp_code": filing.corp_code,
+                        "rcept_dt": filing.rcept_dt,
+                        "category": filing.category,
+                        "section": c.section[:300],
+                        "text": c.text,
+                        **({"variant": variant} if variant else {}),
+                    }
+                )
+        return out
 
-    vectors = embed([p["text"] for p in pending])
-    for p, v in zip(pending, vectors, strict=True):
-        p["embedding"] = v
-    with session_scope() as s:
-        for i in range(0, len(pending), 500):
-            s.execute(table.__table__.insert(), pending[i : i + 500])
-    log.info("inserted %d chunks", len(pending))
+    # 문서 BATCH_DOCS건마다 임베딩하고 바로 저장한다. 중간에 끊겨도 저장된 문서는 남고,
+    # 다시 실행하면 "아직 청크가 없는 문서"만 골라 이어서 한다.
+    log.info("documents to index: %d (variant=%s)", len(rows), variant or "serving")
+    total = 0
+    for start in range(0, len(rows), BATCH_DOCS):
+        batch = rows[start : start + BATCH_DOCS]
+        pending = to_rows(batch)
+        if not pending:
+            continue
+        vectors = embed([p["text"] for p in pending])
+        for p, v in zip(pending, vectors, strict=True):
+            p["embedding"] = v
+        with session_scope() as s:
+            s.execute(table.__table__.insert(), pending)
+        total += len(pending)
+        log.info(
+            "saved %d/%d documents (%d chunks so far)",
+            min(start + BATCH_DOCS, len(rows)),
+            len(rows),
+            total,
+        )
+    log.info("inserted %d chunks", total)
 
 
 def main() -> None:

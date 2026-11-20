@@ -2,6 +2,10 @@
 
     uv run python -m eval.experiments                        # 기본: A, B, C, A+R
     uv run python -m eval.experiments --variants A A+R --limit 5
+    uv run python -m eval.experiments --fresh               # 체크포인트를 무시하고 처음부터
+
+버전 하나가 끝날 때마다 eval/results/experiments-checkpoint.json에 저장한다.
+중간에 멈춘 뒤 다시 실행하면 이미 끝난 버전은 건너뛰고 남은 버전부터 이어서 한다.
 
 버전
 - A    : 운영 인덱스(chunks). 머리말 있음, 약 1,000자.
@@ -30,6 +34,7 @@ from app.rag.companies import build_lookup, find_companies
 from eval.retrieval import EVAL_DIR, RESULTS, load_gold, score_one, summarize
 
 POOL = 40
+CHECKPOINT = RESULTS / "experiments-checkpoint.json"
 RERANK_MODEL = "BAAI/bge-reranker-v2-m3"
 # rerank: None 또는 (다시 정렬할 개수, 입력 최대 토큰)
 VARIANTS = {
@@ -98,12 +103,30 @@ def variant_available(table: str) -> bool:
         return s.scalar(select(ChunkExp.id).where(ChunkExp.variant == table).limit(1)) is not None
 
 
-def run(variants: list[str], limit: int | None) -> dict:
+def _load_checkpoint(limit: int | None) -> dict:
+    if not CHECKPOINT.exists():
+        return {}
+    data = json.loads(CHECKPOINT.read_text(encoding="utf-8"))
+    return data.get("results", {}) if data.get("limit") == limit else {}
+
+
+def _save_checkpoint(results: dict, limit: int | None) -> None:
+    RESULTS.mkdir(exist_ok=True)
+    CHECKPOINT.write_text(
+        json.dumps({"limit": limit, "results": results}, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+
+
+def run(variants: list[str], limit: int | None, fresh: bool = False) -> dict:
     items = [q for q in load_gold() if q["gold"]]
     if limit:
         items = items[:limit]
-    out: dict[str, dict] = {}
+    out: dict[str, dict] = {} if fresh else _load_checkpoint(limit)
     for name in variants:
+        if name in out:
+            print(f"[{name}] 이미 끝남 (체크포인트) → 건너뜀")
+            continue
         cfg = VARIANTS[name]
         if not variant_available(cfg["table"]):
             print(f"[{name}] 건너뜀: 실험 인덱스 '{cfg['table']}'가 없습니다")
@@ -121,6 +144,7 @@ def run(variants: list[str], limit: int | None) -> dict:
         summary = summarize(rows)
         summary["all"]["sec_per_query"] = statistics.median(times)
         out[name] = {"summary": summary, "rows": rows}
+        _save_checkpoint(out, limit)  # 버전 하나 끝날 때마다 저장
         s = summary["all"]
         print(
             f"[{name}] hit@1 {s['hit@1']:.2f}  hit@3 {s['hit@3']:.2f}  MRR {s['mrr']:.2f}  "
@@ -144,8 +168,10 @@ def main() -> None:
     p = argparse.ArgumentParser(description="검색 실험 비교 (dev)")
     p.add_argument("--variants", nargs="*", default=["A", "B", "C", "A+R20", "A+R", "C+R"])
     p.add_argument("--limit", type=int)
+    p.add_argument("--fresh", action="store_true", help="체크포인트 무시하고 처음부터")
     args = p.parse_args()
-    results = run(args.variants, args.limit)
+    results = run(args.variants, args.limit, args.fresh)
+    results = {k: results[k] for k in args.variants if k in results}  # 요청한 순서대로
     print_comparison(results)
     RESULTS.mkdir(exist_ok=True)
     out = RESULTS / f"{datetime.now():%Y%m%d-%H%M}_dev_experiments.json"
