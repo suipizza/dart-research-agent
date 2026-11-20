@@ -1,0 +1,116 @@
+{
+  "label": "v2-failures2",
+  "set": "dev",
+  "system": "agent",
+  "model": "claude-haiku-5-5",
+  "judge_model": "claude-sonnet-5-5",
+  "created": "2026-11-20T09:48:54.834364",
+  "cost_usd": {
+    "generation": 0.0052718,
+    "judge": 0.080896
+  },
+  "tokens": {
+    "generation": [
+      46788,
+      1186
+    ],
+    "judge": [
+      38943,
+      301
+    ]
+  },
+  "errors": [],
+  "summary": {
+    "all": {
+      "n": 2,
+      "correct": 0.5,
+      "correct+partial": 0.75,
+      "fact_rate": 1,
+      "citation_hit": 1,
+      "hallucination": 0,
+      "over_refusal": 0
+    },
+    "fact": {
+      "n": 1,
+      "correct": 1,
+      "correct+partial": 1.0,
+      "fact_rate": 1,
+      "citation_hit": 1,
+      "hallucination": 0,
+      "over_refusal": 0
+    },
+    "summary": {
+      "n": 1,
+      "correct": 0,
+      "correct+partial": 0.5,
+      "fact_rate": 1,
+      "citation_hit": 1,
+      "hallucination": 0,
+      "over_refusal": 0
+    }
+  },
+  "rows": [
+    {
+      "id": "q10",
+      "type": "fact",
+      "route": "search",
+      "question": "SK하이닉스 2026년 6월 유상증자는 어떤 방식이고 자금은 어디에 써?",
+      "expected": "미국 ADR(주식예탁증서) 상장을 위한 유상증자. 신주 17,790,000주를 해외 예탁기관에 제3자배정으로 발행(신주 1주 = ADR 10주). 조달 자금 전액 시설자금, 40,023,070,290,000원.",
+      "answer": "SK하이닉스의 2026년 6월 24일 이사회 결의 유상증자는 제3자배정증자 방식이며, 신주는 해외 예탁기관(Citibank, N.A.)에 원주로 발행되어 미국 ADR(주식예탁증서) 공모·나스닥 상장의 근거가 됩니다[1][2]. 국내에서는 모집·매출이 예정되어 있지 않습니다[1]. 자금은 전액 시설자금으로 사용될 예정이며, 용인 반도체 클러스터 1기 팹 건설투자, 청주 P&T7 어드밴스드 패키징 팹(건설·장비·부대비용 포함), EUV 등 기계장치 취득에 쓰입니다[1]. 최종 정정본(2026.07.10 기준) 시설자금은 40,023,070,290,000원(약 40조230억원)입니다[3]. 신주 수량은 17,790,000주(최대 한도)이며, 정정 후 배정 주식 수는 17,790,000주(Citibank, N.A.)로 기재되었습니다[3]. 발행가액은 2,249,751원으로 정정되었습니다[3].",
+      "unanswerable": false,
+      "cited": [
+        "20260624000420",
+        "20260706000403",
+        "20260710000008"
+      ],
+      "trace": [
+        "analyze: route=search companies=['SK하이닉스'] categories=['rights_issue']",
+        "retrieve: 11 chunks → 1 filings (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 5 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "모델 답변은 제3자배정 방식의 ADR 상장용 증자, 신주 17,790,000주를 해외 예탁기관에 발행, 전액 시설자금 40,023,070,290,000원(정정 후 값)을 모두 정확히 제시했고 용도 세부와 발행가액 2,249,751원도 공시 발췌와 일치한다."
+    },
+    {
+      "id": "q29",
+      "type": "summary",
+      "route": "search",
+      "question": "HD현대중공업 2025년 합병 결정 요약해줘",
+      "expected": "HD현대중공업이 HD현대미포를 흡수합병. 목적은 기술·인력·자원 통합으로 조선업 변화 대응과 경쟁력 강화. 최대주주(HD한국조선해양) 지분율 74.18% → 69.29% 예상, 최대주주 변경 없음.",
+      "answer": "이 공시는 HD현대중공업(주)가 HD현대미포(주)를 흡수합병하는 결정으로, 합병회사는 HD현대중공업(주)(존속), 피합병회사는 HD현대미포(주)(소멸)입니다[1]. 합병비율은 HD현대중공업 보통주 1 : HD현대미포 보통주 0.4059146이며, 합병가액은 HD현대중공업 470,833원, HD현대미포 191,118원입니다[1]. 합병신주는 보통주 16,189,618주이며, 합병계약일은 2025년 08월 27일, 합병기일 및 등기예정일은 2025년 12월 01일, 신주 상장예정일은 2025년 12월 15일입니다[1]. 주주총회 예정일은 2025년 10월 23일이고, 주식매수청구권 행사기간은 2025년 10월 23일부터 11월 12일까지이며 매수예정가격은 462,626원입니다[1]. 합병은 주주총회 특별결의 승인이 필요하며, 주식매수대금 합산액이 1.5조원을 초과하면 합병계약이 해제될 수 있습니다[1]. 또한 공정거래위원회 기업결합신고 수리 전에는 합병 절차를 완료할 수 없습니다[1].",
+      "unanswerable": false,
+      "cited": [
+        "20250827000423"
+      ],
+      "trace": [
+        "analyze: route=search companies=['HD현대중공업'] categories=['merger']",
+        "retrieve: 12 chunks → 1 filings (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 5 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "partial",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "흡수합병 구조와 상세 일정·비율은 공시와 일치하고 틀린 내용은 없으나, 기대 답변의 핵심인 합병 목적(기술·인력·자원 통합)과 최대주주 지분율 74.18%→69.29%, 최대주주 변경 없음이 빠졌다."
+    }
+  ]
+}

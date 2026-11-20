@@ -1,0 +1,185 @@
+{
+  "label": "ablation-examples",
+  "set": "dev",
+  "system": "agent",
+  "model": "claude-haiku-5-5",
+  "judge_model": "claude-sonnet-5-5",
+  "created": "2026-11-20T10:22:20.941647",
+  "cost_usd": {
+    "generation": 0.0055931,
+    "judge": 0.054082
+  },
+  "tokens": {
+    "generation": [
+      41031,
+      2980
+    ],
+    "judge": [
+      24016,
+      605
+    ]
+  },
+  "errors": [],
+  "summary": {
+    "all": {
+      "n": 4,
+      "correct": 1,
+      "correct+partial": 1.0,
+      "fact_rate": 0.5,
+      "citation_hit": 1,
+      "hallucination": 0.25,
+      "over_refusal": 0
+    },
+    "fact": {
+      "n": 1,
+      "correct": 1,
+      "correct+partial": 1.0,
+      "fact_rate": 0.5,
+      "citation_hit": 1,
+      "hallucination": 0,
+      "over_refusal": 0
+    },
+    "financial": {
+      "n": 1,
+      "correct": 1,
+      "correct+partial": 1.0,
+      "fact_rate": 0,
+      "citation_hit": 1,
+      "hallucination": 0,
+      "over_refusal": 0
+    },
+    "trap": {
+      "n": 2,
+      "correct": 1,
+      "correct+partial": 1.0,
+      "fact_rate": 0.75,
+      "citation_hit": 1,
+      "hallucination": 0.5,
+      "over_refusal": 0
+    }
+  },
+  "rows": [
+    {
+      "id": "q01",
+      "type": "fact",
+      "route": "search",
+      "question": "삼성전자가 2026년 8월에 결정한 자기주식 취득의 취득 예정 금액은 얼마야?",
+      "expected": "보통주 14,999,999,992,000원(약 15조원), 53,285,968주. 취득 기간 2026-08-24 ~ 2026-11-21, 목적은 임직원 주식보상.",
+      "answer": "삼성전자가 2026년 8월 21일 결정한 자기주식 취득의 취득예정금액은 보통주식 14,999,999,992,000원(약 15조원)입니다[1]. 기타주식(우선주)은 해당 없음(-)입니다[1]. 취득목적은 임직원 주식보상이며, 취득예상기간은 2026년 8월 24일부터 2026년 11월 21일까지입니다[1].",
+      "unanswerable": false,
+      "cited": [
+        "20260821000616"
+      ],
+      "trace": [
+        "analyze: route=search companies=['삼성전자'] categories=['treasury_acquire']",
+        "retrieve: 4 chunks → 1 filings (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 2 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        false
+      ],
+      "fact_rate": 0.5,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "취득예정금액 보통주 14,999,999,992,000원(약 15조원), 취득기간, 목적이 공시 발췌와 기대 답변에 일치하며 주식수 누락은 질문 범위 밖이라 감점하지 않음."
+    },
+    {
+      "id": "q34",
+      "type": "trap",
+      "route": "search",
+      "question": "삼성전자가 10월 8일에 발표한 3분기 잠정 영업이익은?",
+      "expected": "107.40조원 (단위 조원). 이후 10월 29일 공시에서는 억원 단위로 1,074,405억원.",
+      "answer": "삼성전자가 2026년 10월 8일 공시한 2026년 3분기 연결 잠정 영업이익은 107.40조원이었습니다[2]. 이후 2026년 10월 29일 기재정정으로 107.44조원(107,440,482,000,000원, 약 107조 4,405억원)으로 정정되었습니다[1][3]. 정정 전 107.40조원, 정정 후 107.44조원입니다.",
+      "unanswerable": false,
+      "cited": [
+        "20261116001482",
+        "20261008800004",
+        "20261029800099"
+      ],
+      "trace": [
+        "analyze: route=financial companies=['삼성전자'] categories=['earnings_prelim']",
+        "financial: 1 blocks",
+        "retrieve: 2 chunks → 1 filings (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 6 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": true,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "10/8 공시의 영업이익 107.40조원을 정확히 답했다. 다만 10/29 정정 공시를 '107.44조원(107,440,482,000,000원, 약 107조 4,405억원)'으로 설명한 부분은 발췌와 어긋나 환각이다. 정정 공시 [3]은 조원 단위 107.44만 보여주고, 107조 4,405억원은 [1] 재무제표(접수번호 20261116001482)의 값이며 이를 정정 공시의 값으로 섞어 썼다."
+    },
+    {
+      "id": "q52",
+      "type": "financial",
+      "route": "financial",
+      "question": "삼전 3분기 영업익 얼마임?",
+      "expected": "2026년 3분기 영업이익 107조 4,405억원 (10/29 잠정실적).",
+      "answer": "삼성전자의 2026년 3분기(7~9월) 연결 영업이익은 107,440,482,000,000원(약 107조 4,405억원)입니다 [1]. 전년 동기 대비 +783.1%, 직전 분기 대비 +20.1%입니다 [1]. 이 수치는 잠정치이며 외부감사가 완료되지 않은 자료로 확정치와 다를 수 있습니다 [2][3]. 2026-10-29 기재정정본에서도 영업이익(당해실적)은 107.44조원으로 기재되어 있습니다 [3].",
+      "unanswerable": false,
+      "cited": [
+        "20261116001482",
+        "20261029800087",
+        "20261029800099"
+      ],
+      "trace": [
+        "analyze: route=financial companies=['삼성전자'] categories=['earnings_prelim']",
+        "financial: 1 blocks",
+        "retrieve: 7 chunks → 3 filings (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 3 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        false
+      ],
+      "fact_rate": 0,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "'삼전'을 삼성전자로 인식해 2026년 3분기 영업이익 107조 4,405억원을 정확히 답했고, 전년 동기·직전 분기 증감률과 잠정치 주의사항, 기재정정 내용도 모두 공시 발췌와 일치한다."
+    },
+    {
+      "id": "q53",
+      "type": "trap",
+      "route": "search",
+      "question": "하닉 자사주 소각 몇 주 함?",
+      "expected": "정정 후 23,693,272주 (8/19 최초 결정은 24,070,000주 → 10/26 기재정정). 소각예정금액 40,004,340,000,000원(약 40조원).",
+      "answer": "가장 최근 주식소각결정(2026-08-19 이사회 결의, 2026-10-26 기재정정) 기준으로 보통주 23,693,272주입니다[3]. 정정 전 값은 24,070,000주였고, 자기주식 취득 기간 중 주가 변동에 따라 정정되었습니다[2][3]. 소각예정금액은 40,004,339,063,500원(약 40조원)이며, 소각 예정일은 2026-11-05입니다[3]. 발췌 내용상 소각이 완료되었다는 확인은 없고 예정 상태입니다[3]. 별도로 2026-01-28 결의된 주식소각(보통주 15,300,000주, 소각 예정일 2026-02-09)도 있으나, 이 건의 실제 완료 여부는 발췌에서 확인되지 않습니다[1].",
+      "unanswerable": false,
+      "cited": [
+        "20261026800524",
+        "20260819800340",
+        "20260128800616"
+      ],
+      "trace": [
+        "analyze: route=search companies=['SK하이닉스'] categories=['stock_cancel']",
+        "retrieve: 7 chunks → 3 filings (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 5 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        false
+      ],
+      "fact_rate": 0.5,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "정정 후 23,693,272주와 정정 전 24,070,000주, 소각예정금액 약 40조원(40,004,339,063,500원)을 발췌와 일치하게 답했고, 추가로 언급한 1월 소각 건과 소각 예정일도 발췌에 있는 내용이다."
+    }
+  ]
+}

@@ -25,6 +25,7 @@ class Hit:
     report_nm: str
     rcept_no: str
     text: str
+    chunk_index: int = 0  # 공시 안에서의 청크 순서
 
     @property
     def url(self) -> str:
@@ -65,7 +66,10 @@ def search(
             stmt = stmt.where(Chunk.category.in_(categories))
         rows = s.execute(stmt.order_by(distance).limit(top_k)).all()
 
-    hits = [Hit(float(d), name, dt, nm, c.rcept_no, c.text) for d, name, dt, nm, c in rows]
+    hits = [
+        Hit(float(d), name, dt, nm, c.rcept_no, c.text, c.chunk_index)
+        for d, name, dt, nm, c in rows
+    ]
     return hits, corp_codes or []
 
 

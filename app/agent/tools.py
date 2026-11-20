@@ -75,8 +75,11 @@ class SearchPlan:
     since: date | None
     until: date | None
     categories: list[str] | None
-    top_k: int
+    top_k: int  # v1: 근거로 넘길 청크 수 / v2: 공시를 고르기 위해 먼저 가져오는 청크 수
     latest: bool
+    max_filings: int = 3  # v2: 근거로 넘길 서로 다른 공시 수
+    is_list: bool = False
+    want_subsidiary: bool = False  # 질문이 자회사·종속회사를 직접 묻는가
 
 
 def plan_search(a: Analysis, question: str) -> SearchPlan:
@@ -86,14 +89,18 @@ def plan_search(a: Analysis, question: str) -> SearchPlan:
         categories = ["earnings_prelim"]
         if a.fiscal_year and a.period and not (since or until):
             since, until = earnings_filing_window(a.fiscal_year, a.period)
+    max_filings = 10 if a.is_list else 3
     return SearchPlan(
         query=a.search_query or question,
         corp_codes=to_corp_codes(a.companies) or None,
         since=since,
         until=until,
         categories=categories,
-        top_k=10 if a.is_list else 5,
+        top_k=max_filings * 4,
         latest=a.latest,
+        max_filings=max_filings,
+        is_list=a.is_list,
+        want_subsidiary=any(w in question for w in ("자회사", "종속")),
     )
 
 
@@ -107,20 +114,150 @@ def relaxed(plan: SearchPlan, step: str) -> SearchPlan:
 
 
 def run_search(plan: SearchPlan) -> list[Hit]:
-    pool = plan.top_k * 4 if plan.latest else plan.top_k
     hits, _ = search(
         plan.query,
-        top_k=pool,
+        top_k=plan.top_k,
         corp_codes=plan.corp_codes,
         since=plan.since,
         until=plan.until,
         categories=plan.categories,
         detect_company=False,  # 회사는 질문 분석 노드가 이미 정했다
     )
-    if plan.latest:
-        # 의미가 비슷한 후보 중에서 최신 공시부터. 같은 공시의 청크는 함께 유지한다.
-        hits = sorted(hits, key=lambda h: (h.rcept_dt, -h.distance), reverse=True)[: plan.top_k]
     return hits
+
+
+# ── v2: 청크 → 공시 단위 근거 ────────────────────────────────────
+# v1은 상위 청크 5개만 넘겨서, 맞는 공시를 찾고도 금액·지분율이 든 다른 청크를 놓쳤다.
+# 우리 공시는 대부분 1~5천 자로 짧으므로 공시 전체를 근거로 넘긴다.
+
+# 근거 분량 예산: 공시 수로 나눠 공시당 상한을 정한다. 공시가 1건이면 긴 합병 공시도 거의 다 볼 수 있다.
+CHAR_BUDGET = 24_000
+LIST_CHAR_BUDGET = 30_000
+MIN_DOC_CHARS = 2_500
+CORRECTION_WINDOW_DAYS = 150  # 원공시 뒤 이 기간 안의 [기재정정]을 같은 사건으로 본다
+_SUBSIDIARY_MARKS = ("종속회사의주요경영사항", "자회사의주요경영사항")
+
+
+def is_subsidiary_filing(report_nm: str) -> bool:
+    """'종속회사/자회사의 주요경영사항' 공시: 결정 주체가 제출 회사가 아니라 자회사다."""
+    compact = report_nm.replace(" ", "")
+    return any(m in compact for m in _SUBSIDIARY_MARKS)
+
+
+def group_by_filing(hits: list[Hit], plan: SearchPlan) -> list[list[Hit]]:
+    """청크를 공시별로 묶고 순서를 정한다.
+
+    - 기본: 공시 안에서 가장 가까운 청크의 순위
+    - latest: 최신 공시부터
+    - 자회사 공시는 질문이 자회사를 묻지 않는 한 뒤로 (지우지는 않는다. 함정 질문에서 근거로 필요)
+    """
+    groups: dict[str, list[Hit]] = {}
+    for h in hits:
+        groups.setdefault(h.rcept_no, []).append(h)
+    ordered = list(groups.values())  # 검색 결과가 거리순이므로 첫 등장 순서 = 관련도 순
+    if plan.latest:
+        ordered.sort(key=lambda g: g[0].rcept_dt, reverse=True)
+    if not plan.want_subsidiary:
+        ordered.sort(key=lambda g: is_subsidiary_filing(g[0].report_nm))  # 안정 정렬
+    return ordered[: plan.max_filings]
+
+
+def _document_texts(rcept_nos: list[str]) -> dict[str, str]:
+    from app.models import Document
+
+    with session_scope() as s:
+        rows = s.execute(
+            select(Document.rcept_no, Document.text).where(Document.rcept_no.in_(rcept_nos))
+        ).all()
+    return dict(rows)
+
+
+def _clean_document(text: str) -> str:
+    """표지(주소·전화번호) 섹션을 뺀 원문."""
+    from app.rag.chunker import SKIP_SECTIONS, split_sections
+
+    parts = []
+    for title, body in split_sections(text):
+        if any(skip in title for skip in SKIP_SECTIONS):
+            continue
+        parts.append(f"## {title}\n{body}" if title else body)
+    return "\n\n".join(parts)
+
+
+def later_corrections(rcept_nos: list[str]) -> dict[str, list[tuple[str, str, str]]]:
+    """원공시마다 그 뒤에 나온 같은 회사·같은 유형의 [기재정정] (접수번호, 날짜, 제목) 목록.
+
+    정정 공시는 원공시보다 늦게 나온다. "6월 유상증자"를 6월 공시로만 거르면
+    7월의 정정(최종 금액)을 놓치므로 따로 따라간다.
+    """
+    from datetime import timedelta
+
+    from app.models import Filing
+
+    with session_scope() as s:
+        originals = s.scalars(select(Filing).where(Filing.rcept_no.in_(rcept_nos))).all()
+        out: dict[str, list[tuple[str, str, str]]] = {}
+        for f in originals:
+            if f.is_correction or not f.category:
+                continue
+            rows = s.execute(
+                select(Filing.rcept_no, Filing.rcept_dt, Filing.report_nm)
+                .where(
+                    Filing.corp_code == f.corp_code,
+                    Filing.category == f.category,
+                    Filing.is_correction.is_(True),
+                    Filing.rcept_dt > f.rcept_dt,
+                    Filing.rcept_dt <= f.rcept_dt + timedelta(days=CORRECTION_WINDOW_DAYS),
+                )
+                .order_by(Filing.rcept_dt)
+            ).all()
+            if rows:
+                out[f.rcept_no] = [(r, str(d), nm) for r, d, nm in rows]
+    return out
+
+
+def filing_evidence(groups: list[list[Hit]], plan: SearchPlan) -> list[Evidence]:
+    corrections = later_corrections([g[0].rcept_no for g in groups])
+    picked = {g[0].rcept_no for g in groups}
+    extra = [c for cs in corrections.values() for c in cs if c[0] not in picked]
+    n_docs = max(len(groups) + len(extra), 1)
+    budget = LIST_CHAR_BUDGET if plan.is_list else CHAR_BUDGET
+    cap = max(budget // n_docs, MIN_DOC_CHARS)
+
+    docs = _document_texts([g[0].rcept_no for g in groups] + [c[0] for c in extra])
+    out = []
+    for g in groups:
+        h = g[0]
+        full = _clean_document(docs.get(h.rcept_no, ""))
+        if full and len(full) <= cap:
+            text = full
+        else:
+            # 긴 공시(합병·분할 등)는 검색된 청크만, 원문 순서대로
+            chunks = [x.text.split("\n", 1)[-1] for x in sorted(g, key=lambda x: x.chunk_index)]
+            text = "\n...\n".join(chunks)[:cap]
+        out.append(
+            Evidence(
+                kind="filing",
+                title=f"{h.corp_name} | {h.rcept_dt} | {h.report_nm} | 접수번호 {h.rcept_no}",
+                rcept_no=h.rcept_no,
+                text=text,
+            )
+        )
+        for c_no, c_dt, c_nm in corrections.get(h.rcept_no, []):
+            if c_no in picked:
+                continue
+            picked.add(c_no)
+            body = _clean_document(docs.get(c_no, ""))[:cap]
+            if body:
+                out.append(
+                    Evidence(
+                        kind="filing",
+                        title=f"{h.corp_name} | {c_dt} | {c_nm} | 접수번호 {c_no} (위 공시의 정정)",
+                        rcept_no=c_no,
+                        text=body,
+                    )
+                )
+    return out
 
 
 def search_with_relaxation(plan: SearchPlan, start: int = 0) -> tuple[list[Hit], int]:

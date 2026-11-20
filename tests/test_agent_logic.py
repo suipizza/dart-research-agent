@@ -65,3 +65,45 @@ def test_fiscal_year_results_are_filed_next_year():
 def test_format_krw():
     assert format_krw(83_333_818_000_000) == "83,333,818,000,000원(약 83조 3,338억원)"
     assert format_krw(586_443_842_141) == "586,443,842,141원(약 5,864억원)"
+
+
+def _hit(rcept_no, dt, report_nm, idx=0):
+    from app.rag.search import Hit
+
+    return Hit(0.1, "회사", date.fromisoformat(dt), report_nm, rcept_no, "머리말\n본문", idx)
+
+
+def test_group_by_filing_dedupes_and_demotes_subsidiary_filings():
+    from app.agent.tools import group_by_filing
+
+    hits = [
+        _hit("A", "2026-03-20", "유상증자결정(종속회사의주요경영사항)"),
+        _hit("B", "2026-08-28", "주요사항보고서(유상증자결정)"),
+        _hit("A", "2026-03-20", "유상증자결정(종속회사의주요경영사항)", 1),
+        _hit("C", "2026-11-05", "[기재정정]주요사항보고서(유상증자결정)"),
+    ]
+    plan = SearchPlan("q", None, None, None, None, 20, False, max_filings=3)
+    order = [g[0].rcept_no for g in group_by_filing(hits, plan)]
+    assert order == ["B", "C", "A"]  # 중복 제거 + 자회사 공시는 뒤로
+
+    plan.want_subsidiary = True
+    assert [g[0].rcept_no for g in group_by_filing(hits, plan)] == ["A", "B", "C"]
+
+
+def test_group_by_filing_latest_first():
+    from app.agent.tools import group_by_filing
+
+    hits = [
+        _hit("old", "2025-07-08", "자기주식취득결정"),
+        _hit("new", "2026-08-21", "자기주식취득결정"),
+    ]
+    plan = SearchPlan("q", None, None, None, None, 20, True, max_filings=3)
+    assert [g[0].rcept_no for g in group_by_filing(hits, plan)] == ["new", "old"]
+
+
+def test_is_subsidiary_filing_ignores_spaces():
+    from app.agent.tools import is_subsidiary_filing
+
+    assert is_subsidiary_filing("주식소각결정(자회사의 주요경영사항)")
+    assert is_subsidiary_filing("유상증자결정(종속회사의주요경영사항)")
+    assert not is_subsidiary_filing("주요사항보고서(자기주식취득결정)")

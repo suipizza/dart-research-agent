@@ -24,9 +24,10 @@ from app.agent.tools import (
     RELAX_STEPS,
     Evidence,
     SearchPlan,
+    filing_evidence,
     financial_evidence,
     format_evidence,
-    hits_to_evidence,
+    group_by_filing,
     plan_search,
     search_with_relaxation,
 )
@@ -98,8 +99,9 @@ def node_financial(state: State) -> State:
 def node_retrieve(state: State) -> State:
     plan = state.get("plan") or plan_search(state["analysis"], state["question"])
     hits, level = search_with_relaxation(plan, start=state.get("relax_level", 0))
-    evidence = state.get("fin_evidence", []) + hits_to_evidence(hits)
-    step = f"retrieve: {len(hits)} hits (조건: {RELAX_STEPS[level]})"
+    groups = group_by_filing(hits, plan)
+    evidence = state.get("fin_evidence", []) + filing_evidence(groups, plan)
+    step = f"retrieve: {len(hits)} chunks → {len(groups)} filings (조건: {RELAX_STEPS[level]})"
     return {
         "plan": plan,
         "relax_level": level,
