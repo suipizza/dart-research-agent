@@ -58,3 +58,26 @@ def test_long_paragraph_is_split_at_sentence_boundary():
     assert len(parts) > 1
     assert all(len(p) <= 300 for p in parts)
     assert all(p.endswith(".") for p in parts[:-1])
+
+
+EARNINGS = """1. 연결실적내용 | 단위 : 억원, %
+구분 | 당기실적 | 전기실적 | 전기대비
+구분 | ('26.3Q) | ('26.2Q) | 증감율(%)
+매출액 | 당해실적 | 1,952,532 | 1,714,995 | 13.85
+""" + "\n".join(f"계정{i} | 당해실적 | {i},000 | {i},100 | 1.0" for i in range(60))
+
+
+def test_table_header_lines_stop_at_first_numeric_row():
+    from app.rag.chunker import table_header_lines
+
+    head = table_header_lines(EARNINGS)
+    assert head[0].startswith("1. 연결실적내용")
+    assert all("1,952,532" not in h for h in head)
+
+
+def test_repeat_table_header_on_later_pieces():
+    chunks = chunk_document(EARNINGS, META, max_chars=300, repeat_table_header=True)
+    assert len(chunks) > 1
+    assert all("구분 | 당기실적" in c.body for c in chunks)  # 뒤 조각에도 열 이름
+    plain = chunk_document(EARNINGS, META, max_chars=300)
+    assert not all("구분 | 당기실적" in c.body for c in plain)

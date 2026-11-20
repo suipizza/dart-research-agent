@@ -96,6 +96,32 @@ class Chunk(Base):
     embedding: Mapped[list[float]] = mapped_column(Vector(EMBEDDING_DIM))
 
 
+class ChunkExp(Base):
+    """청킹 실험용 청크(6단계). 운영 검색 테이블(chunks)을 건드리지 않고 버전별로 따로 둔다."""
+
+    __tablename__ = "chunks_exp"
+    __table_args__ = (
+        Index(
+            "ix_chunks_exp_embedding_hnsw",
+            "embedding",
+            postgresql_using="hnsw",
+            postgresql_with={"m": 16, "ef_construction": 64},
+            postgresql_ops={"embedding": "vector_cosine_ops"},
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    variant: Mapped[str] = mapped_column(String(40), index=True)
+    rcept_no: Mapped[str] = mapped_column(String(14), index=True)
+    chunk_index: Mapped[int]
+    corp_code: Mapped[str] = mapped_column(String(8), index=True)
+    rcept_dt: Mapped[date] = mapped_column(Date, index=True)
+    category: Mapped[str] = mapped_column(String(40), index=True)
+    section: Mapped[str] = mapped_column(String(300))
+    text: Mapped[str] = mapped_column(Text)
+    embedding: Mapped[list[float]] = mapped_column(Vector(EMBEDDING_DIM))
+
+
 class Financial(Base):
     """단일회사 주요계정 (fnlttSinglAcnt). 금액은 원 단위 정수."""
 

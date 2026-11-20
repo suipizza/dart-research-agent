@@ -9,6 +9,7 @@
    머리말 유무는 6단계 실험 변수라서 끌 수 있게 했다.
 """
 
+import re
 from dataclasses import dataclass
 
 DEFAULT_MAX_CHARS = 1000
@@ -78,6 +79,31 @@ def pack_lines(body: str, max_chars: int) -> list[str]:
     return [p for p in pieces if p]
 
 
+_NUMERIC_CELL = re.compile(r"[-+()0-9.,%\s]*\d[-+()0-9.,%\s]*")
+
+
+def table_header_lines(body: str, max_lines: int = 3) -> list[str]:
+    """섹션 본문에서 표의 열 이름 행(숫자가 아닌 칸이 대부분인 ' | ' 줄)을 찾는다.
+
+    표가 여러 조각으로 잘리면 뒤 조각에는 '구분 | 당기실적 | 전기실적' 같은 열 이름이 없어
+    숫자만 남는다(예: 39,534,392가 당기인지 전기인지 알 수 없음). 실험 C에서 뒤 조각 앞에 반복한다.
+    """
+    out: list[str] = []
+    for line in body.split("\n"):
+        if " | " not in line:
+            if out:
+                break
+            continue
+        cells = [c.strip() for c in line.split(" | ") if c.strip()]
+        numeric = sum(bool(_NUMERIC_CELL.fullmatch(c)) for c in cells)
+        if numeric * 2 >= len(cells):  # 숫자 행이 나오면 머리는 끝
+            break
+        out.append(line)
+        if len(out) >= max_lines:
+            break
+    return out
+
+
 def header(meta: ChunkMeta, section: str) -> str:
     parts = [meta.corp_name, meta.rcept_dt, meta.report_nm]
     if section and section not in meta.report_nm:
@@ -90,12 +116,21 @@ def chunk_document(
     meta: ChunkMeta,
     max_chars: int = DEFAULT_MAX_CHARS,
     with_header: bool = True,
+    repeat_table_header: bool = False,
 ) -> list[Chunk]:
     pieces: list[tuple[str, str]] = []
     for section, body in split_sections(text):
         if any(skip in section for skip in SKIP_SECTIONS):
             continue
-        pieces.extend((section, p) for p in pack_lines(body, max_chars))
+        packed = pack_lines(body, max_chars)
+        if repeat_table_header and len(packed) > 1:
+            head = table_header_lines(body)
+            if head:
+                prefix = "\n".join(head)
+                packed = [packed[0]] + [
+                    p if p.startswith(head[0]) else f"{prefix}\n{p}" for p in packed[1:]
+                ]
+        pieces.extend((section, p) for p in packed)
 
     # 너무 짧은 조각은 다음 조각 앞에 붙인다 (마지막 조각이면 앞 조각 뒤에 붙인다)
     merged: list[tuple[str, str]] = []
