@@ -1,0 +1,34 @@
+{
+  "label": "agent-v2-first",
+  "set": "test",
+  "system": "agent",
+  "model": "claude-haiku-5-5",
+  "judge_model": "claude-sonnet-5-5",
+  "created": "2026-11-20T10:27:07.341246",
+  "cost_usd": {
+    "generation": 0.0262813,
+    "judge": 0.2366
+  },
+  "tokens": {
+    "generation": [
+      192238,
+      14115
+    ],
+    "judge": [
+      105655,
+      2529
+    ]
+  },
+  "errors": 0,
+  "summary": {
+    "all": {
+      "n": 20,
+      "correct": 0.8,
+      "correct+partial": 0.825,
+      "fact_rate": 0.7129629629629629,
+      "citation_hit": 0.8333333333333334,
+      "hallucination": 0,
+      "over_refusal": 0.16666666666666666
+    }
+  }
+}
