@@ -31,7 +31,7 @@ def generate(question: str, model: str, system: str):
     if system == "agent":
         from app.agent.graph import run_agent
 
-        r = run_agent(question, model=model)
+        r = run_agent(question, model=model, source="eval")
         return r, r.evidence_text, r.trace
     a = answer_question(question, model=model)
     return a, format_context(a.hits), []
@@ -174,6 +174,9 @@ def run(
     if errors and not held_out:
         print("실패:", errors)
     print(f"저장: {out.relative_to(EVAL_DIR.parent)}")
+    from app import obs
+
+    obs.flush()
     return out
 
 

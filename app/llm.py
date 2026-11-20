@@ -7,6 +7,7 @@ from functools import lru_cache
 import anthropic
 from pydantic import BaseModel
 
+from app import obs
 from app.config import get_settings
 
 HAIKU = "claude-haiku-5-5"
@@ -32,11 +33,18 @@ class Usage:
     output_tokens: int = 0
     cost_usd: float = 0.0
 
-    def add(self, model: str, u) -> None:
+    def add(self, model: str, u) -> float:
+        """사용량을 더하고 이번 호출의 비용(달러)을 돌려준다."""
         self.input_tokens += u.input_tokens
         self.output_tokens += u.output_tokens
-        p_in, p_out = PRICES[model]
-        self.cost_usd += (u.input_tokens * p_in + u.output_tokens * p_out) / 1_000_000
+        cost = call_cost(model, u)
+        self.cost_usd += cost
+        return cost
+
+
+def call_cost(model: str, u) -> float:
+    p_in, p_out = PRICES[model]
+    return (u.input_tokens * p_in + u.output_tokens * p_out) / 1_000_000
 
 
 @lru_cache
@@ -63,23 +71,37 @@ def call_json[T: BaseModel](
     """
     json_schema = schema.model_json_schema()
     json_schema["additionalProperties"] = False
-    resp = client().messages.create(
+    with obs.observation(
+        f"claude:{schema.__name__}",
+        as_type="generation",
         model=model,
-        max_tokens=max_tokens,
-        system=system,
-        messages=[{"role": "user", "content": user}],
-        output_config={
-            "effort": effort,
-            "format": {"type": "json_schema", "schema": json_schema},
-        },
-    )
-    if usage is not None:
-        usage.add(model, resp.usage)
-    if resp.stop_reason == "refusal":
-        raise LLMError(f"모델이 응답을 거절함: {getattr(resp, 'stop_details', None)}")
-    if resp.stop_reason == "max_tokens":
-        raise LLMError("max_tokens에 걸려 응답이 잘림")
-    text = next((b.text for b in resp.content if b.type == "text"), None)
-    if text is None:
-        raise LLMError(f"텍스트 응답 없음 (stop_reason={resp.stop_reason})")
-    return schema.model_validate(json.loads(text))
+        model_parameters={"effort": effort, "max_tokens": max_tokens},
+        input=[{"role": "system", "content": system}, {"role": "user", "content": user}],
+    ) as gen:
+        resp = client().messages.create(
+            model=model,
+            max_tokens=max_tokens,
+            system=system,
+            messages=[{"role": "user", "content": user}],
+            output_config={
+                "effort": effort,
+                "format": {"type": "json_schema", "schema": json_schema},
+            },
+        )
+        cost = usage.add(model, resp.usage) if usage is not None else call_cost(model, resp.usage)
+        text = next((b.text for b in resp.content if b.type == "text"), None)
+        gen.update(
+            output=text,
+            usage_details={"input": resp.usage.input_tokens, "output": resp.usage.output_tokens},
+            cost_details={"total": cost},
+            metadata={"stop_reason": resp.stop_reason},
+        )
+        if resp.stop_reason == "refusal":
+            gen.update(level="ERROR", status_message="refusal")
+            raise LLMError(f"모델이 응답을 거절함: {getattr(resp, 'stop_details', None)}")
+        if resp.stop_reason == "max_tokens":
+            gen.update(level="ERROR", status_message="max_tokens")
+            raise LLMError("max_tokens에 걸려 응답이 잘림")
+        if text is None:
+            raise LLMError(f"텍스트 응답 없음 (stop_reason={resp.stop_reason})")
+        return schema.model_validate(json.loads(text))

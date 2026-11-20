@@ -24,6 +24,11 @@ class Settings(BaseSettings):
     # LLM 키는 답변 생성·채점에만 필요하다. CI처럼 키가 없는 환경에서도 앱이 뜨도록 선택값으로 둔다.
     anthropic_api_key: SecretStr | None = None
 
+    # Langfuse 관측. 키가 없으면 추적 없이 동작한다.
+    langfuse_public_key: SecretStr | None = None
+    langfuse_secret_key: SecretStr | None = None
+    langfuse_host: str = "https://cloud.langfuse.com"
+
     database_url: str = "postgresql+psycopg://dart:dart@localhost:5432/dart"
     redis_url: str = "redis://localhost:6379/0"
 

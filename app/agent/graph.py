@@ -19,6 +19,7 @@ from typing import TypedDict
 
 from langgraph.graph import END, START, StateGraph
 
+from app import obs
 from app.agent.analysis import Analysis, analyze
 from app.agent.tools import (
     RELAX_STEPS,
@@ -69,17 +70,20 @@ class State(TypedDict, total=False):
     retries: int
     usage: Usage
     trace: list[str]
+    trace_ctx: dict | None  # Langfuse 최상위 추적 ID (노드마다 명시적으로 넘긴다)
 
 
 # ── 노드 ─────────────────────────────────────────────────────────
 
 
+@obs.traced_node("analyze", summarize=lambda o: o["analysis"].model_dump())
 def node_analyze(state: State) -> State:
     a = analyze(state["question"], state["model"], state["usage"])
     trace = [f"analyze: route={a.route} companies={a.companies} categories={list(a.categories)}"]
     return {"analysis": a, "retries": 0, "relax_level": 0, "fin_evidence": [], "trace": trace}
 
 
+@obs.traced_node("refuse", summarize=lambda o: o["out"].answer)
 def node_refuse(state: State) -> State:
     a = state["analysis"]
     if a.out_of_scope_company:
@@ -91,11 +95,19 @@ def node_refuse(state: State) -> State:
     return {"out": out, "evidence": [], "trace": state["trace"] + ["refuse"]}
 
 
+@obs.traced_node(
+    "financial", as_type="tool", summarize=lambda o: [e.title for e in o["fin_evidence"]]
+)
 def node_financial(state: State) -> State:
     ev = financial_evidence(state["analysis"])
     return {"fin_evidence": ev, "trace": state["trace"] + [f"financial: {len(ev)} blocks"]}
 
 
+@obs.traced_node(
+    "retrieve",
+    as_type="retriever",
+    summarize=lambda o: {"step": o["trace"][-1], "filings": [e.title for e in o["evidence"]]},
+)
 def node_retrieve(state: State) -> State:
     plan = state.get("plan") or plan_search(state["analysis"], state["question"])
     hits, level = search_with_relaxation(plan, start=state.get("relax_level", 0))
@@ -111,6 +123,7 @@ def node_retrieve(state: State) -> State:
     }
 
 
+@obs.traced_node("generate", summarize=lambda o: o["out"].model_dump())
 def node_generate(state: State) -> State:
     user = f"[공시 발췌]\n{format_evidence(state['evidence'])}\n\n[질문]\n{state['question']}"
     if state.get("feedback"):
@@ -126,6 +139,10 @@ def node_generate(state: State) -> State:
     return {"out": out, "trace": state["trace"] + [f"generate (unanswerable={out.unanswerable})"]}
 
 
+@obs.traced_node(
+    "verify",
+    summarize=lambda o: {"checked": o["verify"].checked, "unverified": o["verify"].unverified},
+)
 def node_verify(state: State) -> State:
     v = verify_numbers(state["out"].answer, format_evidence(state["evidence"]))
     step = f"verify: {v.checked} checked, unverified={v.unverified}"
@@ -278,33 +295,72 @@ def _result(question: str, model: str, final: State, usage: Usage) -> AgentResul
     )
 
 
-def run_agent(question: str, model: str = EXPERIMENT_MODEL) -> AgentResult:
-    usage = Usage()
-    final: State = _graph().invoke(
-        {"question": question, "model": model, "usage": usage, "trace": []}
+def _start(question: str, model: str, source: str):
+    root, ctx = obs.start_trace(
+        "dart-agent", input={"question": question}, metadata={"model": model, "source": source}
     )
-    return _result(question, model, final, usage)
+    usage = Usage()
+    inputs = {"question": question, "model": model, "usage": usage, "trace": [], "trace_ctx": ctx}
+    return root, usage, inputs
 
 
-def run_agent_stream(question: str, model: str = EXPERIMENT_MODEL):
+def _finish(root, result: "AgentResult | None", error: Exception | None = None) -> None:
+    if result is None:
+        obs.end_trace(root, output={"error": repr(error)} if error else None)
+        return
+    obs.end_trace(
+        root,
+        output={"answer": result.answer, "sources": [s["rcept_no"] for s in result.sources]},
+        metadata={
+            "trace": result.trace,
+            "unanswerable": result.unanswerable,
+            "verified_numbers": len(result.verified),
+            "cost_usd": round(result.usage.cost_usd, 6),
+        },
+    )
+
+
+def run_agent(question: str, model: str = EXPERIMENT_MODEL, source: str = "cli") -> AgentResult:
+    root, usage, inputs = _start(question, model, source)
+    result, error = None, None
+    try:
+        final: State = _graph().invoke(inputs)
+        result = _result(question, model, final, usage)
+        return result
+    except Exception as e:
+        error = e
+        raise
+    finally:
+        _finish(root, result, error)
+
+
+def run_agent_stream(question: str, model: str = EXPERIMENT_MODEL, source: str = "api"):
     """진행 단계를 하나씩 내보내고 마지막에 결과를 내보내는 제너레이터.
 
     yield ("step", {"node": ..., "label": ..., "detail": ...})  노드가 끝날 때마다
     yield ("result", AgentResult)                                  마지막 한 번
     """
-    usage = Usage()
+    root, usage, inputs = _start(question, model, source)
     seen = 0
     final: State | None = None
-    inputs = {"question": question, "model": model, "usage": usage, "trace": []}
-    for state in _graph().stream(inputs, stream_mode="values"):
-        final = state
-        trace = state.get("trace", [])
-        for entry in trace[seen:]:
-            node = entry.split(":")[0].split(" ")[0]
-            yield "step", {"node": node, "label": STEP_LABELS.get(node, node), "detail": entry}
-        seen = len(trace)
-    assert final is not None
-    yield "result", _result(question, model, final, usage)
+    result = None
+    error: Exception | None = None
+    try:
+        for state in _graph().stream(inputs, stream_mode="values"):
+            final = state
+            trace = state.get("trace", [])
+            for entry in trace[seen:]:
+                node = entry.split(":")[0].split(" ")[0]
+                yield "step", {"node": node, "label": STEP_LABELS.get(node, node), "detail": entry}
+            seen = len(trace)
+        assert final is not None
+        result = _result(question, model, final, usage)
+        yield "result", result
+    except Exception as e:
+        error = e
+        raise
+    finally:
+        _finish(root, result, error)
 
 
 def main() -> None:
@@ -313,6 +369,7 @@ def main() -> None:
     p.add_argument("--model", choices=list(MODELS), default="haiku")
     args = p.parse_args()
     r = run_agent(args.question, MODELS[args.model])
+    obs.flush()
     print(r.answer)
     print(
         "\n출처:",

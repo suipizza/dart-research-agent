@@ -60,6 +60,9 @@ async def lifespan(app: FastAPI):
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     logging.getLogger("httpx").setLevel(logging.WARNING)  # 요청 URL(키 포함) 로그 방지
     yield
+    from app import obs
+
+    obs.flush()  # 종료 전에 남은 추적을 Langfuse로 보낸다
 
 
 app = FastAPI(

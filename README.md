@@ -70,6 +70,22 @@ curl -N -X POST 127.0.0.1:8000/ask -H 'Content-Type: application/json' \
 - **호출 제한 (Redis)**: IP당 하루 20회, 전체 하루 500회 (캐시 응답은 세지 않음). 초과 시 429.
 - Redis가 꺼져도 캐시·제한 없이 동작(fail-open).
 
+## 관측 (Langfuse)
+
+`.env`에 `LANGFUSE_PUBLIC_KEY`·`LANGFUSE_SECRET_KEY`·`LANGFUSE_HOST`가 있으면 질문마다 추적이 남는다(없으면 꺼짐).
+
+```
+dart-agent (질문·답변·비용·흐름)
+ ├─ analyze  └─ claude:Analysis   (모델·입출력·토큰·비용)
+ ├─ financial / retrieve           (재무 데이터, 고른 공시)
+ ├─ generate └─ claude:AnswerOut
+ └─ verify   → 실패 시 generate·verify가 한 번 더 (재시도가 그대로 보임)
+```
+
+- 스트리밍 응답은 단계마다 다른 스레드에서 실행될 수 있어, 최상위 추적 ID를 에이전트 상태로 노드에 넘긴다.
+- Anthropic SDK의 자체 OpenTelemetry 기록은 보내지 않는다. 그대로 두면 같은 호출이 두 번 잡혀 비용이 두 배로 표시됐다(실측 $0.0027 → $0.0050).
+- 출처를 metadata(`source`: api / cli / eval)로 구분한다.
+
 ## 화면 (Next.js)
 
 ```bash
