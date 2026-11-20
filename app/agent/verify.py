@@ -10,7 +10,7 @@ LLM에게 "맞는지 확인해 줘"라고 묻지 않고 결정적인 규칙으�
 """
 
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 _DATE_LIKE = re.compile(r"\d{4}\s*[-./년]\s*\d{1,2}\s*[-./월]\s*\d{1,2}")
 _PERCENT = re.compile(r"[+-]?\d[\d,]*(?:\.\d+)?\s*%")
@@ -27,6 +27,8 @@ MIN_CHECK = 10_000  # 이보다 작은 숫자는 검사하지 않는다
 class VerifyResult:
     checked: int
     unverified: list[str]
+    # 확인된 숫자마다 근거의 어느 줄에서 찾았는지: 화면에서 "이 숫자의 원문"을 보여줄 때 쓴다
+    matches: list[dict] = field(default_factory=list)
 
     @property
     def ok(self) -> bool:
@@ -47,20 +49,46 @@ def evidence_numbers(evidence_text: str) -> tuple[set[str], list[float]]:
     return {r.replace(",", "") for r in raw}, [_num(r) for r in raw]
 
 
-def _close_to_evidence(value: float, values: list[float], tol: float = 0.005) -> bool:
-    for v in values:
+def _close_to_evidence(value: float, raws: list[str], tol: float = 0.005) -> str | None:
+    """value와 (표 단위를 곱했을 때) 0.5% 안에서 맞는 근거 숫자 문자열, 없으면 None."""
+    for raw in raws:
+        v = _num(raw)
         for unit in UNITS:
             target = v * unit
             if target and abs(value - target) / target <= tol:
-                return True
-    return False
+                return raw
+    return None
+
+
+_BLOCK_HEAD = re.compile(r"^\[(\d+)\] (.*?)\| 접수번호 (\d{14})")
+
+
+def locate(raw: str, evidence_text: str) -> dict | None:
+    """근거에서 raw 숫자가 나오는 첫 줄과 그 줄이 속한 공시."""
+    title, rcept = "", ""
+    pattern = re.compile(rf"(?<![\d,]){re.escape(raw)}(?![\d,])")
+    for line in evidence_text.splitlines():
+        head = _BLOCK_HEAD.match(line)
+        if head:
+            title, rcept = head.group(2).strip(" |"), head.group(3)
+            continue
+        if pattern.search(line):
+            return {"line": line.strip()[:240], "rcept_no": rcept, "title": title}
+    return None
 
 
 def verify_numbers(answer: str, evidence_text: str) -> VerifyResult:
-    digits, values = evidence_numbers(evidence_text)
+    digits, _ = evidence_numbers(evidence_text)
+    raws = _ANY_NUM.findall(evidence_text)
     text = _strip_noise(answer)
     unverified: list[str] = []
+    matches: list[dict] = []
     checked = 0
+
+    def record(shown: str, raw: str) -> None:
+        loc = locate(raw, evidence_text)
+        if loc and all(m["value"] != shown for m in matches):
+            matches.append({"value": shown, **loc})
 
     # 1) 조·억·만 단위 금액 (먼저 처리하고 지워서 2)에서 중복으로 잡지 않게 한다)
     for m in list(_KR_AMOUNT.finditer(text)):
@@ -74,8 +102,11 @@ def verify_numbers(answer: str, evidence_text: str) -> VerifyResult:
         if value < MIN_CHECK:
             continue
         checked += 1
-        if not _close_to_evidence(value, values):
+        hit = _close_to_evidence(value, raws)
+        if hit is None:
             unverified.append(m.group(0).strip())
+        else:
+            record(m.group(0).strip(), hit)
     text = _KR_AMOUNT.sub(lambda m: " " if (m.group("jo") or m.group("eok")) else m.group(0), text)
 
     # 2) 쉼표가 들어간 큰 숫자: 근거에 같은 숫자열이 있어야 한다
@@ -85,5 +116,9 @@ def verify_numbers(answer: str, evidence_text: str) -> VerifyResult:
         checked += 1
         if raw.replace(",", "") not in digits:
             unverified.append(raw)
+        else:
+            record(raw, raw)
 
-    return VerifyResult(checked=checked, unverified=list(dict.fromkeys(unverified)))
+    return VerifyResult(
+        checked=checked, unverified=list(dict.fromkeys(unverified)), matches=matches
+    )

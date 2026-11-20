@@ -19,7 +19,7 @@ from app.config import get_settings
 
 log = logging.getLogger("api.guard")
 
-AGENT_VERSION = "v2"  # 에이전트 로직이 바뀌면 올려서 예전 캐시를 무효화한다
+AGENT_VERSION = "v2.1"  # 에이전트 로직이 바뀌면 올려서 예전 캐시를 무효화한다
 
 
 @lru_cache

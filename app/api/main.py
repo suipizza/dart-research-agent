@@ -70,7 +70,10 @@ app = FastAPI(
 )
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Next.js 개발 서버. 배포 시 도메인 추가
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ],  # Next.js 개발 서버. 배포 시 도메인 추가
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
@@ -92,11 +95,19 @@ class Source(BaseModel):
     url: str
 
 
+class VerifiedNumber(BaseModel):
+    value: str = Field(description="답변에 쓰인 숫자 표현")
+    line: str = Field(description="그 숫자가 확인된 공시 원문의 줄")
+    rcept_no: str
+    title: str
+
+
 class AskResponse(BaseModel):
     question: str
     answer: str
     unanswerable: bool
     sources: list[Source]
+    verified: list[VerifiedNumber] = []
     model: str
     cached: bool
     steps: list[str] = []
@@ -138,6 +149,7 @@ def _payload(question: str, result, steps: list[str], cached: bool) -> dict:
         answer=result.answer,
         unanswerable=result.unanswerable,
         sources=[Source(**s) for s in result.sources],
+        verified=[VerifiedNumber(**v) for v in getattr(result, "verified", [])],
         model=result.model,
         cached=cached,
         steps=steps,

@@ -240,6 +240,7 @@ class AgentResult:
     trace: list[str]
     usage: Usage = field(default_factory=Usage)
     sources: list[dict] = field(default_factory=list)  # 화면 출처 패널용
+    verified: list[dict] = field(default_factory=list)  # 확인된 숫자 → 원문 줄
 
 
 def _graph():
@@ -273,6 +274,7 @@ def _result(question: str, model: str, final: State, usage: Usage) -> AgentResul
         trace=final.get("trace", []),
         usage=usage,
         sources=sources,
+        verified=final["verify"].matches if final.get("verify") else [],
     )
 
 
