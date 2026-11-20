@@ -1,0 +1,1712 @@
+{
+  "label": "v1",
+  "set": "dev",
+  "system": "agent",
+  "model": "claude-haiku-5-5",
+  "judge_model": "claude-sonnet-5-5",
+  "created": "2026-11-20T09:37:56.358710",
+  "cost_usd": {
+    "generation": 0.08245819999999998,
+    "judge": 0.6664619999999998
+  },
+  "tokens": {
+    "generation": [
+      561097,
+      52697
+    ],
+    "judge": [
+      299046,
+      6837
+    ]
+  },
+  "errors": [],
+  "summary": {
+    "all": {
+      "n": 53,
+      "correct": 0.8679245283018868,
+      "correct+partial": 0.9056603773584906,
+      "fact_rate": 0.858843537414966,
+      "citation_hit": 0.9787234042553191,
+      "hallucination": 0,
+      "over_refusal": 0.02040816326530612
+    },
+    "compare": {
+      "n": 5,
+      "correct": 1,
+      "correct+partial": 1.0,
+      "fact_rate": 0.8666666666666667,
+      "citation_hit": 1,
+      "hallucination": 0,
+      "over_refusal": 0
+    },
+    "fact": {
+      "n": 15,
+      "correct": 0.9333333333333333,
+      "correct+partial": 0.9666666666666667,
+      "fact_rate": 0.8611111111111112,
+      "citation_hit": 0.9333333333333333,
+      "hallucination": 0,
+      "over_refusal": 0
+    },
+    "financial": {
+      "n": 8,
+      "correct": 1,
+      "correct+partial": 1.0,
+      "fact_rate": 1,
+      "citation_hit": 1,
+      "hallucination": 0,
+      "over_refusal": 0
+    },
+    "list": {
+      "n": 7,
+      "correct": 0.7142857142857143,
+      "correct+partial": 0.7857142857142857,
+      "fact_rate": 0.9047619047619048,
+      "citation_hit": 1,
+      "hallucination": 0,
+      "over_refusal": 0
+    },
+    "refuse": {
+      "n": 4,
+      "correct": 1,
+      "correct+partial": 1.0,
+      "fact_rate": null,
+      "citation_hit": null,
+      "hallucination": 0,
+      "over_refusal": null
+    },
+    "summary": {
+      "n": 4,
+      "correct": 0.5,
+      "correct+partial": 0.625,
+      "fact_rate": 0.75,
+      "citation_hit": 1,
+      "hallucination": 0,
+      "over_refusal": 0
+    },
+    "trap": {
+      "n": 10,
+      "correct": 0.8,
+      "correct+partial": 0.85,
+      "fact_rate": 0.75,
+      "citation_hit": 1,
+      "hallucination": 0,
+      "over_refusal": 0.1
+    }
+  },
+  "rows": [
+    {
+      "id": "q01",
+      "type": "fact",
+      "route": "search",
+      "question": "삼성전자가 2026년 8월에 결정한 자기주식 취득의 취득 예정 금액은 얼마야?",
+      "expected": "보통주 14,999,999,992,000원(약 15조원), 53,285,968주. 취득 기간 2026-08-24 ~ 2026-11-21, 목적은 임직원 주식보상.",
+      "answer": "삼성전자가 2026년 8월 21일 결정한 자기주식 취득의 취득예정금액(보통주식)은 14,999,999,992,000원(약 15조원)입니다 [3]. 취득예상기간은 2026년 8월 24일부터 2026년 11월 21일까지이며 [3], 공시 내용상 임직원 주식보상 목적으로 확정된 15조원 매입입니다 [4]. 이 결정은 삼성전자 자체의 결정이므로 자회사 관련 사항이 아닙니다 [1][3].",
+      "unanswerable": false,
+      "cited": [
+        "20260821000616"
+      ],
+      "trace": [
+        "analyze: route=search companies=['삼성전자'] categories=['treasury_acquire']",
+        "retrieve: 4 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 3 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        false
+      ],
+      "fact_rate": 0.5,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "취득예정금액 14,999,999,992,000원(약 15조원), 취득기간 2026-08-24~2026-11-21, 임직원 주식보상 목적이 공시 발췌와 모두 일치하며, 부가 설명도 발췌에 근거한다."
+    },
+    {
+      "id": "q02",
+      "type": "fact",
+      "route": "search",
+      "question": "SK하이닉스가 2026년 8월 결정한 자사주 취득의 목적과 규모는?",
+      "expected": "목적은 자기주식 소각을 통한 주주가치 제고. 취득 예정 금액 40,004,340,000,000원(약 40조원), 24,070,000주.",
+      "answer": "SK하이닉스가 2026년 8월 19일 결정한 자기주식 취득의 목적은 '자기주식 소각을 통한 주주가치 제고'입니다[2]. 규모는 취득예정주식 보통주식 24,070,000주, 취득예정금액 40,004,340,000,000원(약 40조원)입니다[2]. 취득예정주식 수는 이사회 결의일 전일 종가 1,662,000원을 기준으로 산정했습니다[1]. 취득예상기간은 2026년 8월 20일부터 2026년 11월 19일까지이며, 장내매수 방식으로 SK증권을 통해 취득합니다[2]. 1일 매수 주문수량 한도는 보통주식 2,407,000주입니다[2]. 취득한 자기주식은 전량 소각할 예정입니다[1]. 취득 결정 후 최종 취득 주식 수는 주가 변동에 따라 달라질 수 있습니다[1].",
+      "unanswerable": false,
+      "cited": [
+        "20260819000254"
+      ],
+      "trace": [
+        "analyze: route=search companies=['SK하이닉스'] categories=['treasury_acquire']",
+        "retrieve: 4 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 5 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true,
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "목적(자기주식 소각을 통한 주주가치 제고), 취득예정금액 40,004,340,000,000원(약 40조원), 24,070,000주가 기대 답변과 일치하며 부가 정보도 공시 발췌에 있는 내용이다."
+    },
+    {
+      "id": "q03",
+      "type": "fact",
+      "route": "search",
+      "question": "하나금융지주의 2026년 10월 자기주식 취득 결정 금액과 취득 기간을 알려줘",
+      "expected": "250,000,000,000원(2,500억원), 2,085,070주. 취득 기간 2026-10-26 ~ 2027-01-25.",
+      "answer": "하나금융지주는 2026-10-23 이사회에서 자기주식 취득을 결정했습니다 [3]. 취득예정금액은 보통주식 250,000,000,000원(약 2,500억원)이며 [3], 취득예정주식은 보통주식 2,085,070주입니다 [3]. 취득예상기간은 2026년 10월 26일부터 2027년 01월 25일까지입니다 [3]. 취득방법은 유가증권시장을 통한 장내매수이며, 위탁투자중개업자는 하나증권입니다 [3]. 참고로 취득예정주식수는 2026년 10월 22일 종가 119,900원 기준으로 산정되었으며, 주가 변동에 따라 실제 수량과 금액은 달라질 수 있습니다 [2].",
+      "unanswerable": false,
+      "cited": [
+        "20261023000244"
+      ],
+      "trace": [
+        "analyze: route=search companies=['하나금융지주'] categories=['treasury_acquire']",
+        "retrieve: 4 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 4 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true,
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "취득예정금액 2,500억원, 취득예정주식 2,085,070주, 취득 기간 2026-10-26~2027-01-25 모두 공시 발췌 [3]과 일치하며, 추가 정보(종가 119,900원 등)도 발췌에 있는 사실이다."
+    },
+    {
+      "id": "q04",
+      "type": "fact",
+      "route": "search",
+      "question": "신한지주 2026년 7월 자사주 매입 규모는?",
+      "expected": "700,000,000,000원(7,000억원), 6,698,564주. 목적은 주주환원 및 기업가치 제고.",
+      "answer": "2026년 7월 자사주 매입 관련 공시는 2026년 7월 23일 이사회 결의 건입니다. 취득예정금액은 700,000,000,000원(약 7,000억원), 취득예정주식은 보통주식 6,698,564주입니다[1][3]. 취득예상기간은 2026년 7월 31일부터 10월 22일까지이며, 7월 중 실제 체결 금액은 발췌에 없어 확인할 수 없습니다[3]. 직전 사업연도말 이후 자기주식 취득금액 누계는 700,004,688,140원으로 공시되어 있으나, 이는 7월분이 아닌 누계치입니다[4].",
+      "unanswerable": false,
+      "cited": [
+        "20260723000142"
+      ],
+      "trace": [
+        "analyze: route=search companies=['신한지주'] categories=['treasury_acquire']",
+        "retrieve: 5 hits (조건: full)",
+        "generate (unanswerable=True)",
+        "verify: 4 checked, unverified=[]",
+        "retry: 검색 조건 완화",
+        "retrieve: 5 hits (조건: no_category)",
+        "generate (unanswerable=False)",
+        "verify: 4 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "취득예정금액 7,000억원과 6,698,564주를 정확히 답했고 공시 내용과 일치하며, 7월 실제 체결액은 확인 불가라고 부가 설명했을 뿐 핵심 요구는 거절하지 않았다."
+    },
+    {
+      "id": "q05",
+      "type": "fact",
+      "route": "search",
+      "question": "현대모비스가 2026년 4월에 결정한 자기주식 취득 금액과 목적은?",
+      "expected": "500,000,000,000원(5,000억원), 1,129,943주. 목적은 주주가치 제고를 위한 자기주식 취득 및 소각.",
+      "answer": "현대모비스는 2026-04-24 이사회에서 자기주식 취득을 결정했으며, 취득예정금액은 보통주식 500,000,000,000원(약 5,000억원)입니다[2]. 취득예상기간은 2026년 4월 27일부터 2026년 7월 24일까지입니다[2]. 취득목적은 주주가치 제고이며, 취득한 자기주식을 소각할 예정입니다[1][2]. 이는 2024년 중장기 주주환원 계획과 2026년 1월 28일 공시한 주주가치 제고정책에 따른 것입니다[1].",
+      "unanswerable": false,
+      "cited": [
+        "20260424000517"
+      ],
+      "trace": [
+        "analyze: route=search companies=['현대모비스'] categories=['treasury_acquire']",
+        "retrieve: 4 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 2 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        false
+      ],
+      "fact_rate": 0.5,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "취득금액 5,000억원과 주주가치 제고 목적의 취득 및 소각이 공시와 일치한다. 주식수 1,129,943주는 답변에 없지만 질문이 금액과 목적만 물었으므로 감점하지 않는다."
+    },
+    {
+      "id": "q06",
+      "type": "fact",
+      "route": "search",
+      "question": "카카오 2026년 11월 자사주 취득은 언제부터 언제까지야?",
+      "expected": "2026-11-06 ~ 2027-02-05. 취득 예정 금액 150,000,000,000원(1,500억원), 5,154,639주.",
+      "answer": "카카오의 2026년 11월 자기주식 취득 예상기간은 2026년 11월 06일부터 2027년 02월 05일까지입니다[1]. 취득방법은 유가증권시장을 통한 장내 매수이며, 취득결정일은 2026년 11월 05일입니다[1].",
+      "unanswerable": false,
+      "cited": [
+        "20261105000008"
+      ],
+      "trace": [
+        "analyze: route=search companies=['카카오'] categories=['treasury_acquire']",
+        "retrieve: 4 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 0 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true,
+        false
+      ],
+      "fact_rate": 0.6666666666666666,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "질문이 물은 취득 기간(2026-11-06 ~ 2027-02-05)을 정확히 답했고, 추가로 말한 장내 매수와 취득결정일 11월 5일도 공시와 일치한다. 금액과 주식수는 질문이 묻지 않았으므로 빠져도 감점하지 않는다."
+    },
+    {
+      "id": "q07",
+      "type": "fact",
+      "route": "search",
+      "question": "현대차가 2026년 10월 결정한 분기배당의 1주당 배당금은?",
+      "expected": "보통주 1주당 2,500원 (분기배당, 배당기준일 2026-11-30).",
+      "answer": "2026년 10월 29일 이사회에서 결정한 분기배당의 1주당 배당금은 보통주식 2,500원, 종류주식(우선주 전체 기준) 2,500원입니다 [1]. 시가배당률은 보통주식 0.8%, 종류주식 1.6%이며 [1], 배당금총액은 656,885,882,500원(약 6,569억원)입니다 [1]. 배당기준일은 2026년 11월 30일, 배당금 지급 예정일은 2026년 12월 30일입니다 [1].",
+      "unanswerable": false,
+      "cited": [
+        "20261029800269"
+      ],
+      "trace": [
+        "analyze: route=search companies=['현대자동차'] categories=['dividend']",
+        "retrieve: 1 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 2 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "보통주 1주당 2,500원과 배당기준일 2026-11-30이 기대 답변 및 공시 발췌와 일치하며, 추가로 제시한 수치(종류주식 2,500원, 시가배당률, 배당금총액, 지급예정일)도 모두 발췌에 있다."
+    },
+    {
+      "id": "q08",
+      "type": "fact",
+      "route": "search",
+      "question": "삼성전자 2026년 3분기 분기배당 1주당 배당금과 배당금 총액은?",
+      "expected": "보통주·우선주 각 1주당 4,601원, 배당금 총액 30,003,024,457,217원(약 30조원). 기준일 2026-09-30, 지급 예정일 2026-11-27.",
+      "answer": "삼성전자의 2026년 3분기 분기배당(배당기준일 2026-09-30, 이사회결의일 2026-10-29) 공시에 따르면, 1주당 배당금은 보통주식 4,601원, 종류주식(우선주) 4,601원입니다[1]. 배당금 총액은 30,003,024,457,217원(약 30조원)입니다[1]. 이 중 삼성전자우(우선주) 배당금총액은 3,691,709,905,003원(약 3.7조원)입니다[1].",
+      "unanswerable": false,
+      "cited": [
+        "20261029800101"
+      ],
+      "trace": [
+        "analyze: route=search companies=['삼성전자'] categories=['dividend']",
+        "retrieve: 5 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 4 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "1주당 배당금 4,601원(보통주·우선주 동일)과 배당금 총액 30,003,024,457,217원(약 30조원)이 공시 [1]과 일치하며, 우선주 총액 3,691,709,905,003원도 발췌에 있는 값이다."
+    },
+    {
+      "id": "q09",
+      "type": "fact",
+      "route": "search",
+      "question": "셀트리온 2026년 무상증자 결정 내용 알려줘",
+      "expected": "보통주 10,920,342주 무상증자, 1주당 0.05주 배정. 신주배정기준일 2026-06-05, 상장 예정일 2026-06-30. 재원은 주식발행초과금.",
+      "answer": "셀트리온은 2026년 5월 21일 이사회에서 무상증자를 결정했습니다[1]. 신주 종류와 수는 보통주식 10,920,342주이고, 1주당 액면가액은 1,000원입니다[1]. 증자 전 발행주식총수는 보통주식 221,633,364주입니다[1]. 1주당 신주배정 주식수는 0.05주이며, 신주배정기준일은 2026년 6월 5일입니다[1]. 신주의 배당기산일은 2026년 1월 1일, 신주의 상장 예정일은 2026년 6월 30일입니다(관계기관 협의에 따라 변동 가능)[1]. 재원은 주식발행초과금이며, 단수주는 상장초일 종가 기준으로 현금 지급합니다[1]. 사외이사 5명이 모두 참석했습니다[1].",
+      "unanswerable": false,
+      "cited": [
+        "20260521000101"
+      ],
+      "trace": [
+        "analyze: route=search companies=['셀트리온'] categories=['bonus_issue']",
+        "retrieve: 1 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 2 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true,
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "기대 답변의 핵심(보통주 10,920,342주, 1주당 0.05주, 기준일 2026-06-05, 상장예정일 2026-06-30, 재원 주식발행초과금)이 모두 맞고 2026년 공시(20260521000101)에 근거했으며 부가 정보도 발췌와 일치한다."
+    },
+    {
+      "id": "q10",
+      "type": "fact",
+      "route": "search",
+      "question": "SK하이닉스 2026년 6월 유상증자는 어떤 방식이고 자금은 어디에 써?",
+      "expected": "미국 ADR(주식예탁증서) 상장을 위한 유상증자. 신주 17,790,000주를 해외 예탁기관에 제3자배정으로 발행(신주 1주 = ADR 10주). 조달 자금 전액 시설자금, 40,023,070,290,000원.",
+      "answer": "증자방식은 제3자배정증자입니다 [1]. 배정대상자는 해외예탁기관인 Citibank, N.A.이며, 발행 신주 전량을 ADR 발행을 위해 해외예탁기관에 원주로 예탁할 예정입니다 [2]. 신주 발행가액은 보통주 1주당 2,555,000원이고, 신주 종류와 수는 보통주 17,790,000주(최대 모집 한도, 참고 수치이며 ADR 수요예측 결과에 따라 확정)입니다 [1][5]. 자금은 시설자금으로 사용되며 (1) 용인 반도체클러스터 1기 팹 건설투자 31,019,600백만원(2024년 8월~2030년 12월), (2) 청주 P&T7 어드밴스드 패키징 팹 19,000,000백만원(2026년 4월~2030년 12월), (3) EUV 스캐너 기계장치 취득 11,949,674백만원(2026년 3월~2027년 12월)에 사용할 계획입니다(단위: 백만원, 추정치) [4]. 다만 ADR 발행으로 조달한 자금의 모집총액은 추후 확정 후 결정될 예정입니다 [5]. 또한 본건 유상증자 자금은 총 투자예정금액의 일부 재원으로 충당되고 잔여 소요액은 영업현금흐름, 차입 등으로 충당할 예정입니다 [2].",
+      "unanswerable": false,
+      "cited": [
+        "20260624000420"
+      ],
+      "trace": [
+        "analyze: route=search companies=['SK하이닉스'] categories=['rights_issue']",
+        "retrieve: 5 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 5 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "fact_rate": 0.75,
+      "citation_hit": true,
+      "correctness": "partial",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "방식(제3자배정, ADR 해외예탁기관)과 시설자금 용도는 맞지만, 정정 후 최종 시설자금 40,023,070,290,000원을 제시하지 않았고 정정 전 공시의 세부 금액만 나열했다. 신주 1주=ADR 10주 비율도 빠졌다."
+    },
+    {
+      "id": "q11",
+      "type": "financial",
+      "route": "financial",
+      "question": "SK하이닉스 2026년 3분기 영업이익은?",
+      "expected": "83조 3,338억원 (83,333,818백만원). 전분기 대비 +37.6%, 전년 동기 대비 +632.1%.",
+      "answer": "SK하이닉스 2026년 3분기(7~9월) 연결 영업이익은 83,333,818,000,000원(약 83조 3,338억원)입니다[1]. 공시 표의 단위(백만원)로는 83,333,818백만원입니다[3]. 전년 동기 11,383,390,000,000원(약 11조 3,834억원) 대비 +632.1%, 직전 분기 60,542,608,000,000원(약 60조 5,426억원) 대비 +37.6% 증가했습니다[1][3]. 이 수치는 외부감사를 받지 않은 잠정치입니다[3].",
+      "unanswerable": false,
+      "cited": [
+        "20261116001715",
+        "20261028800036"
+      ],
+      "trace": [
+        "analyze: route=financial companies=['SK하이닉스'] categories=[]",
+        "financial: 1 blocks",
+        "retrieve: 2 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 7 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "영업이익 83조 3,338억원(83,333,818백만원), 전분기 대비 +37.6%, 전년 동기 대비 +632.1%가 기대 답변 및 공시 발췌와 모두 일치하며 추가 수치도 발췌에 있는 값이다."
+    },
+    {
+      "id": "q12",
+      "type": "financial",
+      "route": "financial",
+      "question": "삼성전자 2026년 3분기 매출액과 영업이익 알려줘",
+      "expected": "매출액 195조 2,532억원, 영업이익 107조 4,405억원 (10/29 잠정실적, 억원 단위 1,952,532 / 1,074,405).",
+      "answer": "2026년 3분기(7~9월) 연결 기준 매출액은 195,253,209,000,000원(약 195조 2,532억원)이고[1], 영업이익은 107,440,482,000,000원(약 107조 4,405억원)입니다[1]. 전년 동기 대비 매출액은 +126.9%, 영업이익은 +783.1%이며, 직전 분기 대비 매출액은 +13.9%, 영업이익은 +20.1%입니다[1]. 참고로 2026-10-29 기재정정 공시의 정정후 수치(단위 : 억원)도 매출액 1,952,532억원, 영업이익 1,074,405억원으로 같습니다[5][3].",
+      "unanswerable": false,
+      "cited": [
+        "20261116001482",
+        "20261029800099",
+        "20261029800087"
+      ],
+      "trace": [
+        "analyze: route=financial companies=['삼성전자'] categories=['earnings_prelim']",
+        "financial: 1 blocks",
+        "retrieve: 5 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 6 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "매출액 195조 2,532억원, 영업이익 107조 4,405억원으로 기대 답변과 일치하며 단위도 명시했고, 모든 수치와 증감율이 공시 발췌에 근거한다."
+    },
+    {
+      "id": "q13",
+      "type": "financial",
+      "route": "financial",
+      "question": "현대차 2026년 3분기 영업이익과 전년 동기 대비 증감률은?",
+      "expected": "영업이익 2조 6,772억원 (2,677,232백만원), 전년 동기(2,537,266백만원) 대비 +5.5%.",
+      "answer": "현대자동차의 2026년 3분기(7~9월) 연결 영업이익은 2,677,232,000,000원(약 2조 6,772억원)이며, 전년 동기 2,537,266,000,000원(약 2조 5,373억원) 대비 +5.5% 증가했습니다 [1]. 공정공시 연결 잠정실적표에서도 당기 영업이익은 2,677,232백만원(단위: 백만원), 전년동기 대비 증감율 5.5%로 확인됩니다 [3]. 참고로 직전 분기(2분기) 2,850,888,000,000원 대비로는 -6.1%입니다 [1].",
+      "unanswerable": false,
+      "cited": [
+        "20261116001437",
+        "20261029800228"
+      ],
+      "trace": [
+        "analyze: route=financial companies=['현대자동차'] categories=['earnings_prelim']",
+        "financial: 1 blocks",
+        "retrieve: 5 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 6 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "영업이익 2,677,232백만원(약 2조 6,772억원), 전년 동기 2,537,266백만원 대비 +5.5%로 기대 답변과 일치하며, 직전 분기 -6.1% 등 부가 정보도 발췌에 있는 사실이다."
+    },
+    {
+      "id": "q14",
+      "type": "financial",
+      "route": "financial",
+      "question": "SK하이닉스 2025년 연간 매출액과 영업이익은?",
+      "expected": "매출액 97조 1,467억원(97,146,675백만원), 영업이익 47조 2,063억원(47,206,319백만원).",
+      "answer": "SK하이닉스의 2025년 연간 연결 기준 매출액은 97,146,675,000,000원(약 97조 1,467억원)으로 전년 동기 66,192,960,000,000원(약 66조 1,930억원) 대비 46.8% 증가했습니다 [1]. 같은 기간 연결 영업이익은 47,206,319,000,000원(약 47조 2,063억원)으로 전년 동기 23,467,319,000,000원(약 23조 4,673억원) 대비 101.2% 증가했습니다 [1]. 해당 수치는 재무제표 기준이며, 공정공시 잠정실적(단위: 백만원)의 누계 매출액 97,146,675·영업이익 47,206,319와도 일치합니다 [2].",
+      "unanswerable": false,
+      "cited": [
+        "20260317000635",
+        "20260128800709"
+      ],
+      "trace": [
+        "analyze: route=financial companies=['SK하이닉스'] categories=['earnings_prelim']",
+        "financial: 1 blocks",
+        "retrieve: 2 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 10 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "매출액 97조 1,467억원과 영업이익 47조 2,063억원이 기대 답변과 일치하고, 전년 대비 증감률과 잠정실적 일치 여부도 발췌 내용과 맞다."
+    },
+    {
+      "id": "q15",
+      "type": "financial",
+      "route": "financial",
+      "question": "삼성바이오로직스 2026년 상반기 영업이익은?",
+      "expected": "1조 1,672억원 (1,167,196,422,965원, 2026년 1~6월 누적). 1분기 5,808억원 + 2분기 5,864억원.",
+      "answer": "삼성바이오로직스의 2026년 상반기(1~6월 누적) 연결 영업이익은 1,167,196,422,965원(약 1조 1,672억원)으로, 전년 동기 962,288,400,562원(약 9,623억원) 대비 21.3% 증가했습니다 [1]. 공정공시 잠정실적 기준 누계 영업이익은 11,672억원(단위: 억원)이며, 전년동기누계 9,074억원 대비 28.6% 증가입니다 [2]. 해당 수치는 외부감사인 검토가 완료되지 않은 잠정치로 확정치와 다를 수 있습니다 [3].",
+      "unanswerable": false,
+      "cited": [
+        "20260814003375",
+        "20260723800003"
+      ],
+      "trace": [
+        "analyze: route=financial companies=['삼성바이오로직스'] categories=['earnings_prelim']",
+        "financial: 1 blocks",
+        "retrieve: 2 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 6 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": null,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "2026년 상반기 누적 영업이익 1,167,196,422,965원(약 1조 1,672억원)이 기대 답변과 일치하며, 나머지 수치도 발췌에 근거한다."
+    },
+    {
+      "id": "q16",
+      "type": "financial",
+      "route": "financial",
+      "question": "LG에너지솔루션 2025년 영업이익은 2024년보다 얼마나 늘었어?",
+      "expected": "2025년 1조 3,461억원(1,346,120,000,000원) vs 2024년 5,754억원(575,387,000,000원). 약 2.3배.",
+      "answer": "2025년 연결 영업이익은 1,346,120,000,000원(약 1조 3,461억원)으로, 전년 동기 575,387,000,000원(약 5,754억원) 대비 134.0% 증가했습니다 [1]. 잠정 실적 표에서도 누계 영업이익은 13,461억원, 전년 누계 5,754억원, 증감율 133.9%로 나와 있습니다 [2]. 해당 수치는 잠정치라 확정치와 다를 수 있습니다 [2]. 증가액의 원 단위 금액은 발췌에서 확인되지 않아 제시하지 않았습니다.",
+      "unanswerable": false,
+      "cited": [
+        "20260312000217",
+        "20260129800140"
+      ],
+      "trace": [
+        "analyze: route=financial companies=['LG에너지솔루션'] categories=['earnings_prelim']",
+        "financial: 1 blocks",
+        "retrieve: 5 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 8 checked, unverified=['770,733,000,000']",
+        "retry: 숫자 재확인",
+        "generate (unanswerable=False)",
+        "verify: 6 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": null,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "2025년 1조 3,461억원과 2024년 5,754억원이 기대 답변과 일치하고 증가율 134.0%도 발췌에 근거한다. 증가액을 따로 제시하지 않은 것은 질문의 핵심을 해치지 않는다."
+    },
+    {
+      "id": "q17",
+      "type": "list",
+      "route": "search",
+      "question": "하나금융지주가 2026년에 결정한 자기주식 취득 전부 정리해줘",
+      "expected": "4건. 01-30 2,000억원 / 04-24 2,000억원 / 07-24 2,500억원 / 10-23 2,500억원.",
+      "answer": "발췌된 공시 기준으로 2026년에 하나금융지주가 결정한 자기주식 취득은 총 4건이며, 모두 하나금융지주 자체의 결정입니다[1][2][3][4]. 발췌에 없는 공시는 확인할 수 없습니다. (1) 2026년 1월 30일 결정: 취득예정금액 200,000,000,000원(약 2,000억원), 취득예정주식 보통주 1,930,501주, 취득예상기간 2026년 2월 2일~2026년 4월 30일, 장내매수, 취득목적은 주주환원 및 기업가치 제고입니다[4]. (2) 2026년 4월 24일 결정: 취득예정금액 200,000,000,000원(약 2,000억원), 취득예정주식 보통주 1,654,259주, 취득예상기간 2026년 4월 27일~2026년 7월 21일, 장내매수입니다[3]. (3) 2026년 7월 24일 결정: 취득예정금액 250,000,000,000원(약 2,500억원), 취득예정주식 보통주 1,915,708주, 취득예상기간 2026년 7월 27일~2026년 10월 22일, 유가증권시장을 통한 장내매수입니다[2]. (4) 2026년 10월 23일 결정: 취득예정금액 250,000,000,000원(약 2,500억원), 취득예정주식 보통주 2,085,070주, 취득예상기간 2026년 10월 26일~2027년 1월 25일, 유가증권시장을 통한 장내매수입니다[1]. 참고로 취득예정주식 수는 이사회 결의일 전일 종가 기준으로 산정된 값이며, 실제 취득 수량과 금액은 주가에 따라 달라질 수 있습니다[8][9][10].",
+      "unanswerable": false,
+      "cited": [
+        "20261023000244",
+        "20260724000294",
+        "20260424000404",
+        "20260130000357"
+      ],
+      "trace": [
+        "analyze: route=search companies=['하나금융지주'] categories=['treasury_acquire']",
+        "retrieve: 10 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 12 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "4건의 결정일과 금액(01-30 2,000억, 04-24 2,000억, 07-24 2,500억, 10-23 2,500억)이 기대 답변과 일치하고, 주식 수와 기간 등 부가 정보도 발췌와 맞다."
+    },
+    {
+      "id": "q18",
+      "type": "list",
+      "route": "search",
+      "question": "셀트리온 2026년 자사주 취득 결정 목록",
+      "expected": "5건, 각 약 1,000억원. 04-22, 05-21, 08-31, 09-29, 10-26.",
+      "answer": "셀트리온의 2026년 자기주식 취득결정은 총 5건이며, 모두 주요사항보고서(자기주식취득결정)입니다. 결정 순서는 다음과 같습니다. (1) 2026-04-22 결정: 보통주 492,611주, 취득예정금액 100,000,033,000원(약 1,000억원), 취득예상기간 2026.04.23~2026.07.22 [5]. (2) 2026-05-21 결정: 보통주 557,414주, 취득예정금액 100,000,071,600원(약 1,000억원), 취득예상기간 2026.06.08~2026.08.21 [4]. 같은 날 무상증자를 결의하였고, 신주배정기준일(2026.06.05) 전까지는 자기주식을 취득하지 않을 예정이라고 기재되어 있습니다 [3]. (3) 2026-08-31 결정: 보통주 524,384주, 취득예정금액 100,000,028,800원(약 1,000억원), 취득예상기간 2026.09.01~2026.11.30 [1]. 취득 주식은 전량 소각할 계획입니다 [7]. (4) 2026-09-29 결정: 보통주 560,853주, 취득예정금액 100,000,089,900원(약 1,000억원), 취득예상기간 2026.09.30~2026.12.29 [2]. (5) 2026-10-26 결정: 보통주 514,404주, 취득예정금액 100,000,137,600원(약 1,000억원), 취득예상기간 2026.10.27~2027.01.26 [6]. 모든 건의 취득방법은 유가증권시장을 통한 장내 매수, 취득목적은 주가 안정 및 주주가치 제고, 위탁투자중개업자는 NH투자증권입니다 [1][2][4][5][6].",
+      "unanswerable": false,
+      "cited": [
+        "20260831000538",
+        "20260929000153",
+        "20260521000061",
+        "20260422000159",
+        "20261026000084"
+      ],
+      "trace": [
+        "analyze: route=search companies=['셀트리온'] categories=['treasury_acquire']",
+        "retrieve: 10 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 15 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "모델 답변은 2026년 5건(04-22, 05-21, 08-31, 09-29, 10-26)과 각 약 1,000억원을 정확히 제시했고, 제시된 수치와 부가 정보도 모두 공시 발췌와 일치한다."
+    },
+    {
+      "id": "q19",
+      "type": "list",
+      "route": "search",
+      "question": "KB금융 2026년 자사주 취득 결정 금액들",
+      "expected": "2건. 02-05 6,000억원(4,222,378주), 04-23 6,000억원(3,811,944주).",
+      "answer": "KB금융이 2026년에 결정한 자기주식 취득 예정금액은 두 건입니다. (1) 2026-02-05 이사회 결정: 취득예정금액 보통주식 600,000,000,000원(약 6,000억원), 취득예상기간 2026.02.06~2026.04.20 [5]. (2) 2026-04-23 이사회 결정: 취득예정금액 보통주식 600,000,000,000원(약 6,000억원), 취득예상기간 2026.04.24~2026.07.20 [6]. 참고로 각 결정의 자기주식 취득금액 한도(상법상 배당가능이익 기준 산출)는 2026-02-05 건이 3,152,769백만원(약 3.15조원) [1], 2026-04-23 건이 2,554,534백만원(약 2.55조원) [2]입니다. 이 한도는 취득 예정금액이 아니라 한도 수치이며, 단위는 백만원입니다.",
+      "unanswerable": false,
+      "cited": [
+        "20260205000367",
+        "20260423000431"
+      ],
+      "trace": [
+        "analyze: route=search companies=['KB금융지주'] categories=['treasury_acquire']",
+        "retrieve: 8 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 8 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "2건 모두 6,000억원으로 날짜(02-05, 04-23)와 금액이 기대 답변과 일치하며, 주식수는 질문이 묻지 않아 빠져도 감점 없고 추가된 한도 정보도 발췌와 일치한다."
+    },
+    {
+      "id": "q20",
+      "type": "list",
+      "route": "search",
+      "question": "SK텔레콤 2026년 분기배당 공시들 알려줘",
+      "expected": "3건, 모두 보통주 1주당 830원. 04-27, 07-23, 10-29 결정.",
+      "answer": "2026년 SK텔레콤 분기배당 공시는 아래 3건입니다. (모두 현금배당, 1주당 배당금 보통주 830원)\n1) 2026-04-27 현금ㆍ현물배당결정 (접수번호 20260427801018): 배당금총액 176,790,743,680원, 시가배당률 0.8%, 배당기준일 2026-05-31, 지급예정일 2026-06-18 [2]\n2) 2026-07-23 현금ㆍ현물배당결정 (접수번호 20260723800522): 배당금총액 176,838,066,130원, 시가배당률 0.9%, 배당기준일 2026-08-31, 지급예정일 2026-09-17 [1]\n3) 2026-10-29 현금ㆍ현물배당결정 (접수번호 20261029800802): 배당금총액 176,838,946,760원, 시가배당률 1.1%, 배당기준일 2026-11-30, 지급예정일 2026-12-17 [3]",
+      "unanswerable": false,
+      "cited": [
+        "20260723800522",
+        "20260427801018",
+        "20261029800802"
+      ],
+      "trace": [
+        "analyze: route=search companies=['SK텔레콤'] categories=['dividend']",
+        "retrieve: 3 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 3 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "3건, 보통주 1주당 830원, 결정일 04-27·07-23·10-29가 기대 답변과 일치하며 추가로 제시한 총액·배당률·기준일·지급일도 모두 발췌와 일치한다."
+    },
+    {
+      "id": "q21",
+      "type": "compare",
+      "route": "search",
+      "question": "기아 결산배당 2025년 결정분과 2026년 결정분 비교해줘",
+      "expected": "2025-01 결정 1주당 6,500원 → 2026-01 결정 6,800원 (300원 증가).",
+      "answer": "2025년 결정분 [1]: 1주당 배당금 6,500원, 시가배당율 6.4%, 배당금총액 2,559,045,000,000원(약 2조5,590억원), 배당기준일 2025-03-19, 이사회결의일 2025-01-23입니다. 2026년 결정분 [2]: 1주당 배당금 6,800원, 시가배당율 4.2%, 배당금총액 2,642,499,000,000원(약 2조6,425억원), 배당기준일 2026-03-25, 이사회결의일 2026-01-28입니다. 비교하면 2026년 결정분은 1주당 배당금과 배당금총액이 더 크고, 시가배당율은 더 낮습니다[1][2]. 두 건 모두 결산배당, 현금배당, 보통주 기준이며 차등배당 미해당입니다[1][2].",
+      "unanswerable": false,
+      "cited": [
+        "20250123800401",
+        "20260128800342"
+      ],
+      "trace": [
+        "analyze: route=search companies=['기아'] categories=['dividend']",
+        "retrieve: 6 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 6 checked, unverified=['834억원', '83,454,000,000']",
+        "retry: 숫자 재확인",
+        "generate (unanswerable=False)",
+        "verify: 4 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "2025년 결정분 6,500원과 2026년 결정분 6,800원을 정확히 제시했고 나머지 수치도 공시 발췌와 일치하며, 증가 방향도 맞게 비교했다."
+    },
+    {
+      "id": "q22",
+      "type": "compare",
+      "route": "financial",
+      "question": "삼성전자 2026년 3분기 영업이익은 전년 동기 대비 몇 % 늘었어?",
+      "expected": "783.11% 증가. 12조 1,661억원 → 107조 4,405억원.",
+      "answer": "삼성전자 2026년 3분기(7~9월) 연결 영업이익은 전년 동기 대비 약 783.1% 늘었습니다. 재무제표 기준 당기 영업이익은 107,440,482,000,000원(약 107조 4,405억원), 전년 동기는 12,166,062,000,000원(약 12조 1,661억원)입니다 [1]. 공정공시 정정본의 영업이익 당해실적 전년동기대비 증감율은 783.11%이며, 정정 전 값은 782.50%였습니다 [3][6]. 정정본 표는 단위가 조원입니다.",
+      "unanswerable": false,
+      "cited": [
+        "20261116001482",
+        "20261029800099"
+      ],
+      "trace": [
+        "analyze: route=financial companies=['삼성전자'] categories=['earnings_prelim']",
+        "financial: 1 blocks",
+        "retrieve: 5 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 4 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        false,
+        false
+      ],
+      "fact_rate": 0.3333333333333333,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "모델 답변은 증가율 약 783.1%(정정본 783.11%)와 12조 1,661억원 → 107조 4,405억원을 정확히 제시했고, 정정 전 782.50%와 조원 단위 설명도 발췌와 일치한다."
+    },
+    {
+      "id": "q23",
+      "type": "compare",
+      "route": "financial",
+      "question": "SK하이닉스 2026년 3분기 영업이익 전분기 대비 증감",
+      "expected": "60조 5,426억원 → 83조 3,338억원, +37.6%.",
+      "answer": "SK하이닉스 2026년 3분기(7~9월) 연결 영업이익은 83,333,818,000,000원(약 83조 3,338억원)으로, 직전 분기 60,542,608,000,000원(약 60조 5,426억원) 대비 +37.6% 증가했습니다 [1][3]. 단위: 원(재무제표 기준), 백만원 표 기준으로는 83,333,818백만원 대비 60,542,608백만원 [3]. 이 수치는 잠정치로 향후 변동될 수 있습니다 [2][3].",
+      "unanswerable": false,
+      "cited": [
+        "20261116001715",
+        "20261028800036"
+      ],
+      "trace": [
+        "analyze: route=financial companies=['SK하이닉스'] categories=['earnings_prelim']",
+        "financial: 1 blocks",
+        "retrieve: 2 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 6 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true,
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "2026년 3분기 영업이익 83조 3,338억원, 직전 분기 60조 5,426억원, 증감률 +37.6%가 기대 답변 및 공시 발췌와 모두 일치하며 단위도 정확하다."
+    },
+    {
+      "id": "q24",
+      "type": "compare",
+      "route": "search",
+      "question": "삼성전자 분기배당 2025년 3분기와 2026년 3분기 비교",
+      "expected": "2025년 3분기 1주당 370원 → 2026년 3분기 4,601원.",
+      "answer": "2025년 3분기(배당기준일 2025-09-30, 이사회 결정일 2025-10-30) 분기배당은 1주당 370원(보통주·종류주식 동일), 시가배당율 보통주 0.4%·종류주식 0.6%, 배당금총액 2,453,345,103,170원(약 2.45조원)입니다 [5]. 2026년 3분기(배당기준일 2026-09-30, 이사회 결정일 2026-10-29) 분기배당은 1주당 4,601원(보통주·종류주식 동일), 시가배당률 보통주 1.7%·종류주식 2.2%, 배당금총액 30,003,024,457,217원(약 30조원)이며 지급 예정일은 2026-11-27입니다 [1]. 1주당 배당금과 배당금총액 모두 2026년 3분기가 2025년 3분기보다 높게 공시되어 있습니다 [1][5]. 우선주(삼성전자우) 배당금총액은 2025년 3분기 296,901,940,120원 [5], 2026년 3분기 3,691,709,905,003원입니다 [1]. 다만 2026년 3분기 공시에는 증가 사유가 명시되어 있지 않아 원인은 발췌에서 확인할 수 없습니다 [1].",
+      "unanswerable": false,
+      "cited": [
+        "20261029800101",
+        "20251030800075"
+      ],
+      "trace": [
+        "analyze: route=search companies=['삼성전자'] categories=['dividend']",
+        "retrieve: 10 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 6 checked, unverified=['27.5조원', '27,549,679,354,047']",
+        "retry: 숫자 재확인",
+        "generate (unanswerable=False)",
+        "verify: 6 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "2025년 3분기 1주당 370원, 2026년 3분기 1주당 4,601원이 발췌 [5], [1]과 일치하고, 그 외 수치(배당금총액, 시가배당률, 일자)도 모두 발췌와 맞다."
+    },
+    {
+      "id": "q25",
+      "type": "compare",
+      "route": "financial",
+      "question": "네이버 2026년 3분기 연결 영업이익은 작년 같은 분기보다 어땠어?",
+      "expected": "4,513억원, 전년 동기 5,706억원 대비 -20.9% 감소.",
+      "answer": "네이버의 2026년 3분기(7~9월) 연결 영업이익은 4,513억원(발표 수치 4,513, 단위: 억원)으로, 전년 동기 5,706억원 대비 20.9% 감소했습니다[3][1]. 직전 분기(2분기) 5,203억원 대비로는 13.3% 감소했습니다[3][1]. 원 단위로는 451,306,205,162원(약 4,513억원)이며 전년 동기는 570,646,831,171원입니다[1]. 이 수치는 외부감사 전 잠정치이므로 확정 시 달라질 수 있습니다[3].",
+      "unanswerable": false,
+      "cited": [
+        "20261113001140",
+        "20261112800027"
+      ],
+      "trace": [
+        "analyze: route=financial companies=['NAVER'] categories=['earnings_prelim']",
+        "financial: 1 blocks",
+        "retrieve: 4 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 6 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true,
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "연결 기준 영업이익 4,513억원, 전년 동기 5,706억원 대비 -20.9%로 기대 답변과 일치하며 별도 기준(3,226억)과 혼동하지 않았고, 추가 수치(직전 분기, 원 단위)도 발췌에 있는 내용이다."
+    },
+    {
+      "id": "q26",
+      "type": "summary",
+      "route": "search",
+      "question": "삼성바이오로직스 2026년 유상증자 핵심만 요약해줘",
+      "expected": "2026-08-28 결정. 주주배정후 실권주 일반공모, 신주 2,270,000주. 최종(정정 후) 확정발행가 1,174,000원, 자금 용도는 전액 타법인 증권 취득자금 2,664,980,000,000원(약 2조 6,650억). 최초 공시에서는 예정발행가 1,322,000원, 타법인 증권 취득 2,706,163,546,103원 + 시설자금 294,776,453,897원이었으나 10-01 정정(1차 발행가 확정)에서 시설자금이 빠지고 금액이 줄었다. 11-05 정정에서 발행가 최종 확정.",
+      "answer": "핵심 요약: (1) 결정 주체: 질문하신 삼성바이오로직스 본사가 아니라 100% 종속회사 Samsung Biologics America, Inc.의 유상증자 결정이며, 본사는 이에 대한 출자 건으로 공시했습니다 [1][4]. (2) 최초 결정: 이사회결의일 2026-03-20 [1]. (3) 발행 내용: 보통주 350,000주, 1주당 액면가 1,499,700원(USD 1,000 환산, 2026-03-20 최초 매매기준율 USD/KRW 1,499.70 적용), 총 USD 350,000,000 [1][4]. (4) 자금 목적: 운영자금 40,491,900,000원(USD 27,000,000), 타법인 증권 취득자금 484,403,100,000원(USD 323,000,000)이며, 미화 금액은 추후 확정 예정입니다 [1][4]. 대상 회사는 미국 Rockville 소재 Human Genome Sciences 취득 자금 마련 목적으로 발표되었습니다 [4]. (5) 일정: 신주배정기준일 및 납입일 2026-03-27, 1주당 신주배정주식수 35주, 주주배정증자 [1]. (6) 발행가: 2026-10-01 정정에서 예정발행가 보통주 1,174,000원(확정예정일 2026년 11월 04일)으로 기재 [3]. 2026-11-05 정정에서 확정발행가 보통주 1,174,000원으로 정정되었고, 정정 전 확정발행가는 '-'이었습니다 [5]. 정정 전후 발행가가 달라진 것은 없으나, 최초 공시의 발행가산정방법은 이사회 결정(액면가 적용)이었습니다 [1][5]. (7) 증권신고서 제출대상 아니오, 공정거래위원회 신고대상 아니오 [4]. 발췌에 없는 총 조달금액 합계, 청약 방법 및 청약 장소 등 세부 내용은 확인할 수 없습니다 [2][3][5].",
+      "unanswerable": false,
+      "cited": [
+        "20260320801902",
+        "20261001000449",
+        "20261105000355"
+      ],
+      "trace": [
+        "analyze: route=search companies=['삼성바이오로직스'] categories=['rights_issue']",
+        "retrieve: 5 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 9 checked, unverified=['5,249억원', '524,895,000,000']",
+        "retry: 숫자 재확인",
+        "generate (unanswerable=False)",
+        "verify: 9 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        false,
+        false,
+        false
+      ],
+      "fact_rate": 0,
+      "citation_hit": true,
+      "correctness": "wrong",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "모델은 삼성바이오로직스 본사의 2026-08-28 유상증자(신주 2,270,000주, 타법인 증권 취득자금 2.66조원 등)가 아니라 종속회사 Samsung Biologics America의 3월 유상증자를 핵심으로 요약해 엉뚱한 공시를 근거로 답했다. 발행가 1,174,000원만 우연히 일치하며, 발췌 내용은 근거가 있어 환각은 아니다."
+    },
+    {
+      "id": "q27",
+      "type": "summary",
+      "route": "search",
+      "question": "카카오가 2026년 8월에 결정한 합병 내용 요약해줘",
+      "expected": "카카오가 100% 자회사 카카오인베스트먼트를 흡수합병(소규모합병, 합병비율 1:0, 신주 발행 없음). 목적은 지배구조 단순화. 합병 전 카카오는 플랫폼 사업부문을 인적분할(신설 카카오에이아이(가칭)), 존속회사는 카카오엑스(가칭)로 상호 변경 예정.",
+      "answer": "카카오(주식회사 카카오)가 자회사인 주식회사 카카오인베스트먼트(발행주식 100% 소유)를 흡수합병하는 결정입니다[1][2][3]. 카카오가 존속하고 카카오인베스트먼트는 소멸합니다[5]. 합병 이사회결의일과 주요사항보고서 제출일은 2026년 08월 21일이며[1][5], 합병계약일은 2026년 08월 24일입니다[4]. 합병비율은 1.0000000 : 0.0000000으로, 무증자합병이라 신주를 발행하지 않습니다[3]. 소규모합병(상법 제527조의3)에 해당하여 이사회 결의로 승인할 계획이며, 주식매수청구권은 부여되지 않습니다[1][5]. 다만 존속회사 발행주식총수의 20% 이상을 보유한 주주가 공고일로부터 2주 내 반대 의사를 서면 통지하면 소규모합병으로 진행할 수 없고, 일반합병으로 전환할 수 있습니다[5]. 합병반대의사통지 접수기간은 2026년 09월 07일~09월 21일입니다[4][5]. 합병기일은 2027년 01월 01일, 합병등기 예정일은 2027년 01월 08일입니다[1][3]. 본 합병은 카카오의 인적분할이 완료되는 것을 전제로 하며, 분할 완료가 안 되면 합병계약이 해제될 수 있습니다[2][3]. 합병 목적은 지배구조 단순화를 통한 기업가치 제고입니다[2]. 카카오인베스트먼트의 최근 사업연도 재무는 자산총계 2,769,273,683,101원, 부채총계 404,103,529,999원, 자본총계 2,365,170,153,102원, 당기순이익 20,777,427,041원입니다(원 단위, 삼정회계법인 감사의견 적정)[4].",
+      "unanswerable": false,
+      "cited": [
+        "20260821000052"
+      ],
+      "trace": [
+        "analyze: route=search companies=['카카오'] categories=['merger']",
+        "retrieve: 5 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 4 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true,
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "카카오가 100% 자회사 카카오인베스트먼트를 흡수하는 소규모합병이고 합병비율 1:0, 신주 발행 없음, 목적이 지배구조 단순화라는 핵심을 모두 맞혔으며 인적분할 전제도 언급했고, 추가 수치는 모두 발췌에 근거한다."
+    },
+    {
+      "id": "q28",
+      "type": "summary",
+      "route": "search",
+      "question": "현대모비스 회사분할 결정 요약",
+      "expected": "자동차용 램프 사업부문을 단순·물적분할해 비상장 신설회사 현대모비스 램프(가칭) 설립. 현대모비스는 상장법인으로 존속. 분할기일 2027-04-01(예정). 2026-09-30 결정, 10-28 정정.",
+      "answer": "현대모비스(상장사)가 자동차용 램프 사업부문을 단순·물적분할해 비상장 신설회사 '현대모비스 램프 주식회사(가칭)'를 설립하는 회사분할 결정입니다[4]. 이사회 결의일은 2026년 9월 30일이고 분할은 주주총회 특별결의로 진행합니다[4][5]. 분할기일은 2027년 4월 1일 0시(예정)입니다[4]. 분할대상은 국내 자동차용 램프 자회사 지분을 포함하되, 현대자동차·기아 관련 A/S 사업은 제외합니다[4]. 분할 후 분할신설회사 지분 전량을 매수인에게 매각할 예정이며, 국외 자회사의 자동차용 램프 사업 관련 지분도 함께 매각될 예정입니다[1][2]. 매수인의 신원은 발췌에 명시되어 있지 않습니다[1]. 분할설립회사 설립시 재무내용(2025년 12월 31일 현재 기준)은 자산총계 541,529,971,210원, 부채총계 165,516,488,327원, 자본총계 376,013,482,883원, 자본금 3,760,130,000원입니다[5]. 신설사업부문 최근 사업연도 매출액은 1,022,010,642,156원이고 재상장 신청은 없습니다[5]. 주주확정기준일은 2026년 10월 15일입니다[5]. 분할반대의사통지 접수기간은 2026년 11월 9일부터 11월 23일까지로, 오늘(2026-11-19) 기준 진행 중입니다[5]. 본건 분할을 반대하는 주주는 주식매수청구권을 행사할 수 있습니다[2]. 이 결정은 2025년 12월 26일 한국거래소 조회공시 요구(램프사업부 매각 보도 관련)에 대한 확정 공시입니다[1]. 기재정정(2026-10-28) 본문에는 재무·일정 숫자가 제시되지 않아 숫자는 원공시 기준이며, 처음 결정일은 2026년 9월 30일입니다[3][5].",
+      "unanswerable": false,
+      "cited": [
+        "20260930000478",
+        "20261028000138"
+      ],
+      "trace": [
+        "analyze: route=search companies=['현대모비스'] categories=['split']",
+        "retrieve: 5 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 5 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true,
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "핵심 사실(램프 사업부문 단순·물적분할, 비상장 신설 현대모비스 램프(가칭), 존속회사 상장 유지, 분할기일 2027-04-01, 결정일 2026-09-30, 정정 2026-10-28)이 모두 맞고 부가 수치도 발췌와 일치한다."
+    },
+    {
+      "id": "q29",
+      "type": "summary",
+      "route": "search",
+      "question": "HD현대중공업 2025년 합병 결정 요약해줘",
+      "expected": "HD현대중공업이 HD현대미포를 흡수합병. 목적은 기술·인력·자원 통합으로 조선업 변화 대응과 경쟁력 강화. 최대주주(HD한국조선해양) 지분율 74.18% → 69.29% 예상, 최대주주 변경 없음.",
+      "answer": "HD현대중공업(주)가 HD현대미포(주)를 흡수합병하는 것으로, HD현대중공업이 존속회사(합병법인), HD현대미포가 소멸회사(피합병법인)이며 두 회사 모두 유가증권시장 상장법인입니다[1]. 합병 목적은 기술·인력·자원 통합을 통해 역량을 일원화하고 글로벌 경쟁우위를 확보하는 것입니다[1]. 주요 일정은 채권자이의 제출기간 종료 2025년 11월 24일, 합병기일 및 종료보고 총회일·합병등기예정일 2025년 12월 1일, 신주 상장예정일 2025년 12월 15일입니다[3]. 우회상장에는 해당하지 않습니다[3]. 합병 승인은 상법상 특별결의사항으로, 참석주주 의결권 3분의 2 이상 및 발행주식총수 3분의 1 이상의 찬성이 필요하며 승인을 얻지 못하면 합병이 무산될 수 있습니다[5][18 관련 발췌 5]. 공정거래위원회의 기업결합신고 수리 전에는 합병 절차를 완료할 수 없습니다[2]. 합병 신주는 HD현대미포 주주의 주식매수청구권 행사에 따른 자기주식분을 제외하여 최종 변동될 수 있습니다[4]. 또한 싱가포르 투자법인으로 해외 사업 거점을 일원화하는 구조재편 계획이 있으나, 투자금액·방식·일정 등은 추후 이사회 결의로 정해질 예정입니다[5].",
+      "unanswerable": false,
+      "cited": [
+        "20250827000423"
+      ],
+      "trace": [
+        "analyze: route=search companies=['HD현대중공업'] categories=['merger']",
+        "retrieve: 5 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 0 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "partial",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "합병 주체(HD현대중공업이 HD현대미포를 흡수합병)와 목적은 맞지만, 기대 답변의 핵심인 최대주주(HD한국조선해양) 지분율 74.18%→69.29% 변동 및 최대주주 변경 없음이 빠졌고, 발췌에 근거한 다른 내용은 사실이다."
+    },
+    {
+      "id": "q30",
+      "type": "trap",
+      "route": "search",
+      "question": "2026년 11월 기준으로 삼성전자 가장 최근 자사주 취득 결정 금액은?",
+      "expected": "2026-08-21 결정, 14,999,999,992,000원(약 15조원).",
+      "answer": "2026년 11월 기준 삼성전자의 가장 최근 자기주식 취득 결정은 2026년 8월 21일 공시(접수번호 20260821000616)이며, 취득예정금액은 보통주식 14,999,999,992,000원(약 15조원)입니다[3]. 취득예정주식은 보통주식 53,285,968주이고, 취득예상기간은 2026년 8월 24일부터 11월 21일까지입니다[3]. 취득목적은 임직원 주식보상이며, 유가증권시장을 통한 장내 매수 방식입니다[3]. 결정일은 2026년 8월 21일입니다[1]. 참고로 그 이전 결정(2026년 3월 18일)의 취득예정금액은 7,174,300,000,000원입니다[5].",
+      "unanswerable": false,
+      "cited": [
+        "20260821000616",
+        "20260318001062"
+      ],
+      "trace": [
+        "analyze: route=search companies=['삼성전자'] categories=['treasury_acquire']",
+        "retrieve: 5 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 4 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "2026-08-21 결정, 취득예정금액 14,999,999,992,000원(약 15조원)으로 기대 답변과 일치하며, 부가 정보도 모두 발췌에 근거함."
+    },
+    {
+      "id": "q31",
+      "type": "trap",
+      "route": "search",
+      "question": "LG화학이 유상증자를 결정한 적 있어?",
+      "expected": "LG화학 자체 유상증자는 없다. 검색되는 공시 8건은 모두 '종속회사의 주요경영사항'으로, LG에너지솔루션 산하 미국 법인들(LG Energy Solution Michigan, GM 합작사 Ultium Cells, ES America)의 유상증자를 최상위 지배회사인 LG화학이 공시한 것이다.",
+      "answer": "아니오. 발췌된 공시는 모두 '종속회사의 주요경영사항'이며, 유상증자의 결정 주체는 LG화학이 아니라 종속회사인 ㈜LG에너지솔루션입니다 [1][5]. 2025년 정정 건은 LG에너지솔루션의 종속회사 LG Energy Solution Michigan, Inc.이 Ultium Cells LLC에 출자하는 건과 관련되며, 정정 후 타법인 증권 취득자금은 1,041,215,000,000원(약 1조 412억원), 시설자금은 2,082,430,000,000원입니다 [3][4]. 2024-02-26 공시도 LG에너지솔루션의 주주배정증자 관련 내용으로, 타법인 증권 취득자금 USD 933,509,000에 대한 원화 환산 금액이 적혀 있습니다 [5]. 발췌에는 LG화학 자체의 유상증자 결정 공시는 없습니다. 원공시 날짜는 발췌에 없어 확인할 수 없습니다 [1][3].",
+      "unanswerable": false,
+      "cited": [
+        "20250401801031",
+        "20250401801032",
+        "20240226800835"
+      ],
+      "trace": [
+        "analyze: route=search companies=['LG화학'] categories=['rights_issue']",
+        "retrieve: 5 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 4 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true,
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "LG화학 자체 유상증자는 없고 모두 종속회사 주요경영사항 공시라는 핵심 결론이 맞으며, 수치도 발췌와 일치한다. 다만 결정 주체를 LG에너지솔루션으로 서술했고 Ultium Cells·ES America 언급은 빠졌으나 핵심 결론에는 영향이 없다."
+    },
+    {
+      "id": "q32",
+      "type": "trap",
+      "route": "search",
+      "question": "삼성물산 2026년 유상증자 신주 수는?",
+      "expected": "삼성물산 자체 유상증자가 아니다. 종속회사 삼성바이오로직스의 유상증자(신주 2,270,000주)를 삼성물산이 종속회사 주요경영사항으로 공시한 것.",
+      "answer": "삼성물산이 공시한 유상증자 건은 종속회사인 삼성바이오로직스(주)의 주요경영사항으로, 신주 수는 보통주식 2,270,000주입니다[1][3][5]. 이는 삼성물산 자체의 결정이 아니라 자회사 삼성바이오로직스의 결정입니다. 신주 종류주식은 발행되지 않습니다(-)[1][5]. 정정 공시에서도 신주 수는 2,270,000주로 동일하게 유지되었습니다[3][5].",
+      "unanswerable": false,
+      "cited": [
+        "20260828800769",
+        "20261001800695",
+        "20261105800955"
+      ],
+      "trace": [
+        "analyze: route=search companies=['삼성물산'] categories=['rights_issue']",
+        "retrieve: 5 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 2 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true,
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "삼성물산 자체 유상증자가 아니라 종속회사 삼성바이오로직스의 유상증자(보통주 2,270,000주)를 종속회사 주요경영사항으로 공시한 것이라고 정확히 답했으며, 모든 내용이 발췌와 일치한다."
+    },
+    {
+      "id": "q33",
+      "type": "trap",
+      "route": "search",
+      "question": "삼성바이오로직스 유상증자는 처음에 언제 결정됐어?",
+      "expected": "2026-08-28 (최초 주요사항보고서). 이후 2026-10-01, 2026-11-05에 기재정정.",
+      "answer": "처음 결정은 2026-08-28에 제출된 원공시 '주요사항보고서(유상증자결정)'(접수번호 20260828000001)로 확인됩니다[3]. 이 공시의 예정발행가액 기산일이 '이사회결의일 전일(2026년 08월 27일)'이므로 이사회결의일은 2026-08-28로 볼 수 있습니다[3]. 이후 2026-10-01에 [기재정정]주요사항보고서(유상증자결정)가 제출되었으나[1][2][4], 이는 정정본이므로 최초 결정일은 원공시 날짜인 2026-08-28입니다.",
+      "unanswerable": false,
+      "cited": [
+        "20260828000001",
+        "20261001000449"
+      ],
+      "trace": [
+        "analyze: route=search companies=['삼성바이오로직스'] categories=['rights_issue']",
+        "retrieve: 5 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 0 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "최초 결정을 2026-08-28 원공시로 정확히 답했고 이후 2026-10-01 기재정정도 발췌와 일치하며, 11-05 정정 누락은 질문 요구 밖이라 감점하지 않는다."
+    },
+    {
+      "id": "q34",
+      "type": "trap",
+      "route": "search",
+      "question": "삼성전자가 10월 8일에 발표한 3분기 잠정 영업이익은?",
+      "expected": "107.40조원 (단위 조원). 이후 10월 29일 공시에서는 억원 단위로 1,074,405억원.",
+      "answer": "삼성전자가 2026-10-08 공시한 2026년 3분기(7~9월) 연결 잠정 영업이익은 107.40조원입니다(공정공시 표, 단위: 조원) [3]. 전기(2026년 2분기) 89.49조원 대비 20.01% 증가했고, 전년 동기 12.17조원 대비 782.50% 증가했습니다 [3]. 해당 수치는 외부감사가 완료되지 않은 잠정치이며 확정치와 다를 수 있습니다 [2][3]. 재무제표 기준 수치도 동일하게 107,440,482,000,000원(약 107조 4,405억원)으로 확인됩니다 [1].",
+      "unanswerable": false,
+      "cited": [
+        "20261116001482",
+        "20261008800004"
+      ],
+      "trace": [
+        "analyze: route=financial companies=['삼성전자'] categories=['earnings_prelim']",
+        "financial: 1 blocks",
+        "retrieve: 2 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 5 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "10/8 공정공시의 영업이익 107.40조원(단위 조원)을 정확히 답했고, 추가로 제시한 증감율과 재무제표 기준 107조 4,405억원도 발췌와 일치한다."
+    },
+    {
+      "id": "q35",
+      "type": "trap",
+      "route": "search",
+      "question": "신한지주 2024년 자기주식 취득 목적과 금액은?",
+      "expected": "2024-02-08 결정, 목적 주식소각, 150,000,000,000원(1,500억원), 3,500,583주.",
+      "answer": "2024년 2월 8일 자기주식취득결정 공시(접수번호 20240208000535)의 발췌에는 취득 목적이 나와 있지 않아 확인할 수 없습니다[2][4]. 취득 예정금액(2. 취득예정금액)의 구체적인 값도 발췌에 없어 확인할 수 없습니다[4]. 발췌에 있는 금액은 '자기주식 취득금액 한도' 4,463,232,035,228원(약 4.46조원, 단위: 원)이며, 이는 취득할 수 있는 금액의 상한이고 실제 취득 예정금액은 아닙니다[2].",
+      "unanswerable": true,
+      "cited": [
+        "20240208000535"
+      ],
+      "trace": [
+        "analyze: route=search companies=['신한지주'] categories=['treasury_acquire']",
+        "retrieve: 5 hits (조건: full)",
+        "generate (unanswerable=True)",
+        "verify: 4 checked, unverified=[]",
+        "retry: 검색 조건 완화",
+        "retrieve: 5 hits (조건: no_category)",
+        "generate (unanswerable=True)",
+        "verify: 3 checked, unverified=[]",
+        "retry: 검색 조건 완화",
+        "retrieve: 5 hits (조건: no_date)",
+        "generate (unanswerable=True)",
+        "verify: 2 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        false,
+        false
+      ],
+      "fact_rate": 0,
+      "citation_hit": true,
+      "correctness": "wrong",
+      "hallucination": false,
+      "refused": true,
+      "over_refusal": true,
+      "judge_reason": "기대 답변은 목적 주식소각, 1,500억원, 3,500,583주인데 모델은 목적과 취득예정금액을 확인 불가로 거절하고 취득한도 4.46조원만 제시해 핵심 요구에 답하지 못했다."
+    },
+    {
+      "id": "q36",
+      "type": "trap",
+      "route": "search",
+      "question": "SK하이닉스 3분기 실적에서 지배기업 소유주지분 순이익은?",
+      "expected": "2026년 3분기 당해 39,534,392백만원(약 39조 5,344억원), 전분기 93,820,236백만원 대비 -57.9%.",
+      "answer": "SK하이닉스의 2026년 3분기(당해실적, 2026-07-01~2026-09-30) 연결 기준 지배기업 소유주지분 순이익은 39,534,392백만원(약 39.5조원)입니다[1]. 전기(2026년 2분기) 93,820,236백만원 대비 -57.9%이고, 전년동기(2025년 3분기) 12,595,195백만원 대비 213.9% 증가입니다[1]. 누계(2026년 1~9월) 지배기업 소유주지분 순이익은 173,684,804백만원(약 173.7조원)입니다[1]. 단위는 백만원이며, 이 수치는 외부감사인의 감사가 완료되지 않은 잠정치입니다[1][2].",
+      "unanswerable": false,
+      "cited": [
+        "20261028800036"
+      ],
+      "trace": [
+        "analyze: route=financial companies=['SK하이닉스'] categories=['earnings_prelim']",
+        "financial: 0 blocks",
+        "retrieve: 2 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 6 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "당해 3분기 39,534,392백만원(약 39.5조원)과 전분기 93,820,236백만원 대비 -57.9%를 정확히 답했고, 전년동기·누계 수치도 발췌와 일치하며 단위도 명시했다."
+    },
+    {
+      "id": "q37",
+      "type": "refuse",
+      "route": "refuse",
+      "question": "삼성전자 지금 사도 될까?",
+      "expected": "투자 판단(매수·매도 추천)은 하지 않는다고 안내. 필요하면 공시 기반 사실(최근 실적, 자사주, 배당)은 제공 가능.",
+      "answer": "매수 추천 및 주가 전망에 해당하는 질문이라 답변할 수 없습니다. 이 서비스는 코스피 시가총액 상위 기업의 2024년 이후 공시 사실만 안내하며, 주가 전망이나 투자 판단은 하지 않습니다.",
+      "unanswerable": true,
+      "cited": [],
+      "trace": [
+        "analyze: route=refuse companies=['삼성전자'] categories=[]",
+        "refuse"
+      ],
+      "fact_hits": [],
+      "fact_rate": null,
+      "citation_hit": null,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": null,
+      "judge_reason": "기대 답변이 투자 판단 거절 안내이고 모델이 매수 추천과 주가 전망은 답할 수 없다고 정확히 안내했으며 공시 사실만 제공한다고 밝혔다. 거절이 기대된 응답이므로 핵심 요구를 회피한 것이 아니다."
+    },
+    {
+      "id": "q38",
+      "type": "refuse",
+      "route": "refuse",
+      "question": "SK하이닉스 현재 주가 얼마야?",
+      "expected": "주가는 공시 데이터가 아니라 제공할 수 없다고 안내.",
+      "answer": "주가 전망·현재 주가 등 투자 판단 관련 질문은 제공할 수 없습니다. 이 서비스는 코스피 시가총액 상위 기업의 2024년 이후 공시 사실만 안내하며, 주가 전망이나 투자 판단은 하지 않습니다.",
+      "unanswerable": true,
+      "cited": [],
+      "trace": [
+        "analyze: route=refuse companies=['SK하이닉스'] categories=[]",
+        "refuse"
+      ],
+      "fact_hits": [],
+      "fact_rate": null,
+      "citation_hit": null,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": true,
+      "over_refusal": null,
+      "judge_reason": "기대 답변이 '주가는 공시 데이터가 아니므로 제공 불가'이고, 모델도 현재 주가를 제공할 수 없다고 안내해 일치하며 발췌에 없는 사실도 추가하지 않았다."
+    },
+    {
+      "id": "q39",
+      "type": "trap",
+      "route": "financial",
+      "question": "LG전자 2026년 3분기 영업이익은?",
+      "expected": "7,819억원 (10/28 정정 후 잠정실적. 10/7 최초 공시는 7,818억원). 전년 동기 6,889억원 대비 +13.5%, 전분기 1조 5,791억원 대비 -50.5%.",
+      "answer": "LG전자 2026년 3분기(7~9월) 연결 영업이익은 781,858,000,000원(약 7,819억원)입니다[1]. 최근 정정본(2026-10-28 기재정정)에서도 당해실적 영업이익은 7,819억원(단위: 억원)으로 정정 후 값이 7,819, 정정 전 값은 7,818(억원)이었습니다[3][4]. 전년 동기 688,918,000,000원(약 6,889억원) 대비 13.5% 증가, 직전 분기 1,579,082,000,000원(약 1조 5,791억원) 대비 50.5% 감소했습니다[1][3]. 누계 영업이익은 정정 후 40,347억원입니다[2][3].",
+      "unanswerable": false,
+      "cited": [
+        "20261116000748",
+        "20261028800266",
+        "20261007800145"
+      ],
+      "trace": [
+        "analyze: route=financial companies=['LG전자'] categories=['earnings_prelim']",
+        "financial: 1 blocks",
+        "retrieve: 4 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 8 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "영업이익 7,819억원(781,858,000,000원), 정정 전 7,818억원, 전년 동기 6,889억원 대비 +13.5%, 전분기 1조 5,791억원 대비 -50.5%가 모두 기대 답변 및 공시 발췌와 일치하고 지주사 LG와 혼동하지 않았다."
+    },
+    {
+      "id": "q40",
+      "type": "refuse",
+      "route": "refuse",
+      "question": "삼성전자 2023년 자사주 취득 결정 알려줘",
+      "expected": "수집 기간(2024-01-01 이후) 밖이라 확인할 수 없다고 안내.",
+      "answer": "2024-01-01 이전 기간(2023년) 공시는 수집 대상이 아닙니다. 이 서비스는 코스피 시가총액 상위 기업의 2024년 이후 공시 사실만 안내하며, 주가 전망이나 투자 판단은 하지 않습니다.",
+      "unanswerable": true,
+      "cited": [],
+      "trace": [
+        "analyze: route=refuse companies=['삼성전자'] categories=['treasury_acquire']",
+        "refuse"
+      ],
+      "fact_hits": [],
+      "fact_rate": null,
+      "citation_hit": null,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": true,
+      "over_refusal": null,
+      "judge_reason": "기대 답변대로 2024-01-01 이전인 2023년 공시는 수집 범위 밖이라고 안내했고, 발췌에 없는 사실이나 숫자는 추가하지 않았다."
+    },
+    {
+      "id": "q41",
+      "type": "refuse",
+      "route": "refuse",
+      "question": "크래프톤 2026년 3분기 영업이익은?",
+      "expected": "크래프톤은 수집 대상 기업이 아니라 답할 수 없다고 안내.",
+      "answer": "크래프톤은(는) 수집 대상 기업이 아니라 공시를 확인할 수 없습니다. 이 서비스는 코스피 시가총액 상위 기업의 2024년 이후 공시 사실만 안내하며, 주가 전망이나 투자 판단은 하지 않습니다.",
+      "unanswerable": true,
+      "cited": [],
+      "trace": [
+        "analyze: route=refuse companies=[] categories=[]",
+        "refuse"
+      ],
+      "fact_hits": [],
+      "fact_rate": null,
+      "citation_hit": null,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": true,
+      "over_refusal": null,
+      "judge_reason": "기대 답변이 '수집 대상 아님으로 답할 수 없음'인데 모델이 동일하게 안내했고, 발췌에 없는 숫자나 사실을 지어내지 않았다."
+    },
+    {
+      "id": "q42",
+      "type": "fact",
+      "route": "search",
+      "question": "KT&G 2026년 9월 자사주 취득 금액과 목적은?",
+      "expected": "360,000,000,000원(3,600억원), 2,071,346주. 목적은 주주가치 제고 및 주식 소각.",
+      "answer": "케이티앤지(KT&G)가 2026-09-22 공시한 자기주식취득결정에 따르면, 취득예정금액은 보통주식 360,000,000,000원(약 3,600억원)이고[3], 취득목적은 주주가치제고 및 주식소각입니다[3]. 취득예정주식은 보통주식 2,071,346주이며[3], 취득예상기간은 2026년 9월 23일부터 2026년 12월 22일까지입니다[3]. 취득방법은 장내매수이며, 위탁투자중개업자는 NH투자증권과 신한투자증권입니다[3]. 자기주식 취득금액 한도는 4,623,710,224,093원(약 4조 6,237억원)입니다[1]. 이 결정은 질문한 회사 자신의 이사회 결의이며 자회사 공시가 아닙니다[2][3].",
+      "unanswerable": false,
+      "cited": [
+        "20260922000256"
+      ],
+      "trace": [
+        "analyze: route=search companies=['케이티앤지'] categories=['treasury_acquire']",
+        "retrieve: 4 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 5 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "취득금액 360,000,000,000원(3,600억원), 2,071,346주, 목적 주주가치제고 및 주식소각이 기대 답변과 일치하며 추가 정보도 발췌에 근거함."
+    },
+    {
+      "id": "q43",
+      "type": "trap",
+      "route": "search",
+      "question": "SK스퀘어가 2026년에 결정한 자기주식 취득은?",
+      "expected": "SK스퀘어 자체 결정은 2026-03-25 1건, 40,000,000,000원(400억원), 67,226주. 08-19·10-28 공시는 '자회사의 주요경영사항'으로 자회사 SK하이닉스의 자사주 취득을 SK스퀘어가 공시한 것이라 SK스퀘어의 취득이 아니다.",
+      "answer": "SK스퀘어 본사 명의의 자기주식 취득 결정은 2026-03-25 공시 1건입니다[2][3]. 자기주식 취득금액 한도는 176,292,858,761원(약 1,763억원)이며, 직전 사업연도말 이후 이미 취득한 금액 99,999,565,500원(약 1,000억원)을 차감한 값입니다[3]. 1일 매수 주문수량 한도는 보통주 159,521주입니다[2]. 취득예정주식수와 취득예정금액은 발췌에 없어 확인할 수 없습니다[2]. 취득 결정 전 장내 직접 취득 보통주는 344,701주입니다[3]. 2026-08-19와 2026-10-28 공시는 제목에 '자회사의 주요경영사항'이 있어 결정 주체가 SK스퀘어의 자회사입니다[1][4][5]. 2026-08-19 자회사(에스케이하이닉스) 공시에는 보통주 24,070,000주, 취득예정금액 40,004,340,000,000원(약 40조원), 취득예상기간 2026년 8월 20일~11월 19일, 목적 자기주식 소각, 장내매수(위탁투자중개업자 SK증권), 1일 매수 주문수량 한도 보통주 2,407,000주가 기재되어 있습니다[5]. 2026-10-28 자회사 공시는 취득목적을 주주가치 제고 약 10조원과 임직원 상여 등 주식기준보상 약 10조원으로 적고 있으며, 1일 매수 주문수량 한도는 보통주 1,492,000주입니다[1]. 다만 이 공시에는 자회사명과 취득예정금액 합계가 발췌에 없습니다[1].",
+      "unanswerable": false,
+      "cited": [
+        "20261028800051",
+        "20260325000832",
+        "20260819800334"
+      ],
+      "trace": [
+        "analyze: route=search companies=['SK스퀘어'] categories=['treasury_acquire']",
+        "retrieve: 5 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 13 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        false,
+        false,
+        false
+      ],
+      "fact_rate": 0,
+      "citation_hit": true,
+      "correctness": "partial",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "SK스퀘어 자체 결정이 2026-03-25 1건이고 08-19·10-28 공시는 자회사 공시라는 핵심 구분은 맞췄지만, 기대 답변의 취득예정금액 400억원과 67,226주는 '발췌에 없어 확인 불가'라며 빠뜨렸다. 틀린 숫자는 없으므로 partial이다."
+    },
+    {
+      "id": "q44",
+      "type": "financial",
+      "route": "financial",
+      "question": "삼성전기 2026년 3분기 영업이익과 전년 동기 대비 증감률은?",
+      "expected": "6,910억원 (690,957백만원), 전년 동기 2,603억원 대비 +165.5%.",
+      "answer": "삼성전기의 2026년 3분기(7~9월) 연결 영업이익은 690,956,897,032원(약 6,910억원)이며, 전년 동기 260,277,272,715원(약 2,603억원) 대비 +165.5% 증가했습니다 [1]. 공정공시 잠정실적 표에서도 당해 영업이익은 690,957백만원(단위: 백만원), 전년동기 260,277백만원, 증감율 165.5%로 확인됩니다 [3]. 이는 잠정치이며 외부감사인의 회계검토가 완료되지 않았으므로 확정치와 다를 수 있습니다 [2].",
+      "unanswerable": false,
+      "cited": [
+        "20261116001915",
+        "20261028800169"
+      ],
+      "trace": [
+        "analyze: route=financial companies=['삼성전기'] categories=['earnings_prelim']",
+        "financial: 1 blocks",
+        "retrieve: 2 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 6 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "영업이익 6,910억원(690,956,897,032원), 전년 동기 2,603억원, 증감률 +165.5%가 기대 답변 및 공시 발췌 [1][3]과 모두 일치하며 부가 설명도 [2]에 근거한다."
+    },
+    {
+      "id": "q45",
+      "type": "fact",
+      "route": "search",
+      "question": "HMM이 2025년에 결정한 자기주식 취득 규모는?",
+      "expected": "2025-08-14 결정, 2,143,199,981,200원(약 2조 1,432억원), 81,801,526주. 목적은 주주환원을 통한 주주가치 제고.",
+      "answer": "발췌 공시 기준으로 HMM이 2025년에 결정한 자기주식 취득은 1건(취득결정일 2025년 08월 14일)이며, 취득예정 주식은 보통주식 81,801,526주이고 취득예정금액은 2,143,199,981,200원(약 2.14조원)입니다[3]. 1주당 공개매수가격은 26,200원이며, 이 금액은 26,200원에 최대취득예정주식수를 곱한 값입니다[2][3]. 취득방법은 공개매수, 취득목적은 주주환원을 통한 주주가치 제고, 취득예상기간은 2025년 08월 18일부터 2025년 09월 12일까지입니다[3]. 공개매수 응모가 취득예정수량에 미달하면 실제 취득주식수와 금액이 변경될 수 있습니다[2]. 같은 공시의 자기주식 취득금액 한도(배당가능이익 기준)는 13,006,495,002,115원(약 13조원)이지만, 이는 취득 가능 상한이며 결정된 취득 규모가 아닙니다[1]. 발췌에는 다른 해의 결정이나 추가 결정은 포함되어 있지 않습니다.",
+      "unanswerable": false,
+      "cited": [
+        "20250814003240"
+      ],
+      "trace": [
+        "analyze: route=search companies=['HMM'] categories=['treasury_acquire']",
+        "retrieve: 4 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 7 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "결정일 2025-08-14, 81,801,526주, 2,143,199,981,200원, 주주환원 목적이 모두 기대 답변과 일치하며 추가 정보도 발췌에 근거한다."
+    },
+    {
+      "id": "q46",
+      "type": "list",
+      "route": "search",
+      "question": "2026년 11월에 자사주 취득 결정한 회사 어디야?",
+      "expected": "2곳. 카카오(11-05, 1,500억원, 5,154,639주), 한화에어로스페이스(11-06, 149,600,000,000원, 220,000주, 임직원 보상 목적).",
+      "answer": "2026년 11월에 자기주식 취득을 결정한 회사는 두 곳입니다. (1) 한화에어로스페이스: 취득결정일 2026년 11월 06일, 취득예정주식 220,000주, 취득예정금액 149,600,000,000원(약 1,496억원), 취득목적은 임직원 보상, 장내매수 방식입니다 [4]. (2) 카카오: 취득결정일 2026년 11월 05일, 취득예정주식 5,154,639주, 취득예정금액 150,000,000,000원(약 1,500억원), 취득목적은 자기주식 취득 및 소각을 통한 주주환원과 기업가치 제고, 유가증권시장 장내매수 방식입니다 [2][3]. 두 건 모두 질문한 회사 자체의 주요사항보고서(자기주식취득결정)이며, 종속회사 공시가 아닙니다. 발췌에 있는 것은 이 두 건뿐이므로, 발췌 외 다른 회사의 2026년 11월 결정은 확인할 수 없습니다.",
+      "unanswerable": false,
+      "cited": [
+        "20261105000008",
+        "20261106000139"
+      ],
+      "trace": [
+        "analyze: route=search companies=[] categories=['treasury_acquire']",
+        "retrieve: 8 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 6 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "두 회사(카카오 11-05, 1,500억원, 5,154,639주 / 한화에어로스페이스 11-06, 149,600,000,000원, 220,000주, 임직원 보상)를 모두 정확히 제시했고 공시 발췌와도 일치한다."
+    },
+    {
+      "id": "q47",
+      "type": "list",
+      "route": "search",
+      "question": "2026년 10월에 주식 소각 결정한 금융지주들 정리해줘",
+      "expected": "3곳. 하나금융지주(10-23, 2,085,070주, 2,500억원), 우리금융지주(10-23, 57,369주, 743,455,227원), 신한지주(10-27, 5,263,157주, 4,500억원).",
+      "answer": "2026년 10월에 주식소각을 결정한 금융지주는 2곳입니다. (1) 하나금융지주: 이사회 결의일 2026-10-23, 소각할 보통주식 2,085,070주, 소각예정금액 250,000,000,000원(약 2,500억원), 자기주식 취득 예정기간 2026-10-26~2027-01-25, 장내매수, 위탁 투자중개업자 하나증권, 소각 예정일은 미정(-)이며 취득 완료 후 전량 소각 예정입니다 [6][1]. (2) 우리금융지주: 이사회 결의일 2026-10-23, 소각할 보통주식 57,369주, 소각예정금액 743,455,227원(약 7억 4,346만원), 취득방법은 기취득 자기주식, 소각 예정일 2026-11-06이며 관계기관 협의 등에 따라 변경될 수 있습니다 [3]. 제외한 건: 신한지주는 2026-10-20 [기재정정]이지만 이사회 결의일이 2026-07-23이므로 제외합니다 [8][10]. 하나금융지주의 2026-10-01 [기재정정] 건도 이사회 결의일이 2026-07-24이므로 제외합니다 [2][4][5][9]. 기업은행은 2026-10-23 주식소각결정이 있으나 금융지주가 아닌 은행이므로 제외합니다 [7].",
+      "unanswerable": false,
+      "cited": [
+        "20261023800593",
+        "20261001800144",
+        "20261023800658",
+        "20261023800699",
+        "20261020800419"
+      ],
+      "trace": [
+        "analyze: route=search companies=[] categories=['stock_cancel']",
+        "retrieve: 10 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 6 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true,
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "partial",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "하나금융지주와 우리금융지주 2곳은 수치까지 정확하지만, 기대 답변에 있는 신한지주(10-27, 5,263,157주, 4,500억원)를 빠뜨렸고 발췌에 없는 신한지주는 오히려 [기재정정]이라며 제외했다. 틀린 수치는 없으므로 partial로 판정한다."
+    },
+    {
+      "id": "q48",
+      "type": "list",
+      "route": "search",
+      "question": "2026년에 자체적으로 유상증자를 결정한 회사들은?",
+      "expected": "3곳. SK하이닉스(06-24, 미국 ADR 상장용 제3자배정), NAVER(07-27, 제3자배정), 삼성바이오로직스(08-28, 주주배정후 실권주 일반공모).",
+      "answer": "자체 유상증자 결정(자회사의 주요경영사항 아님)으로 확인되는 회사는 SK하이닉스와 고려아연입니다. SK하이닉스는 2026-06-24 주요사항보고서(유상증자결정)[3]와 2026-07-06 기재정정[7]이 있습니다. 고려아연은 2026-02-19 기재정정 주요사항보고서(유상증자결정)[4][8][9]이 있으며, 제3자배정 방식으로 Crucible JV LLC 등을 대상으로 합니다. SK스퀘어는 2026-06-24 및 2026-07-06, 2026-07-10 공시[1][2][5][6][10]가 모두 '자회사의 주요경영사항'이므로 결정 주체가 자회사이고 SK스퀘어 자체 결정이 아니어서 제외했습니다.",
+      "unanswerable": false,
+      "cited": [
+        "20260624000420",
+        "20260706000403",
+        "20260219002746",
+        "20260219002382",
+        "20260706800713",
+        "20260624800818",
+        "20260710800091"
+      ],
+      "trace": [
+        "analyze: route=search companies=[] categories=['rights_issue']",
+        "retrieve: 10 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 0 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        false,
+        false
+      ],
+      "fact_rate": 0.3333333333333333,
+      "citation_hit": true,
+      "correctness": "wrong",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "기대 답변은 SK하이닉스, NAVER, 삼성바이오로직스 3곳인데, 모델은 SK하이닉스만 맞히고 NAVER와 삼성바이오로직스를 빠뜨렸으며, 이전 결정의 기재정정 공시일 뿐인 고려아연을 자체 결정 회사로 잘못 포함했다."
+    },
+    {
+      "id": "q49",
+      "type": "fact",
+      "route": "search",
+      "question": "카카오 2026년 11월 주식 소각 결정 내용 알려줘",
+      "expected": "보통주 5,154,639주 소각, 소각예정금액 150,000,000,000원(1,500억원). 같은 날(11-05) 결정한 자사주 취득분을 소각하는 것.",
+      "answer": "카카오는 2026-11-05 이사회에서 주식 소각을 결정했습니다[1][2]. 소각할 보통주식은 5,154,639주이며 종류주식은 없습니다[1]. 소각 전 발행주식 총수는 보통주식 443,000,510주입니다[1]. 소각예정금액은 150,000,000,000원(약 1,500억원)이고 1주당 액면가는 100원입니다[1]. 소각을 위한 자기주식 취득 예정기간은 2026-11-06부터 2027-02-05까지이며, 취득방법은 장내매수, 위탁 투자중개업자는 NH투자증권입니다[1]. 소각 예정일은 공시에 '-'로 기재되어 있고, 회사는 자기주식 취득 완료 후 취득한 주식을 일괄 전량 소각할 예정이라고 밝혔습니다[2]. 소각 수량은 2026년 11월 4일 종가 29,100원을 기준으로 산정되었으며, 취득 과정의 주가 변동에 따라 실제 수량과 금액은 달라질 수 있고 추후 정정공시로 확정할 예정입니다[2]. 상법 제343조 제1항 단서에 따른 소각으로 발행주식 총수는 감소하지만 자본금은 감소하지 않습니다[2]. 이사회에는 독립이사 4명이 모두 참석했습니다[1]. 공정거래위원회 신고대상 여부는 미해당입니다[1].",
+      "unanswerable": false,
+      "cited": [
+        "20261105800084"
+      ],
+      "trace": [
+        "analyze: route=search companies=['카카오'] categories=['stock_cancel']",
+        "retrieve: 2 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 5 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "보통주 5,154,639주와 소각예정금액 150,000,000,000원이 맞고, 같은 날 결정한 자기주식 취득분을 소각하는 것이라는 점도 공시 내용과 일치하며 추가 정보도 발췌에 있는 사실이다."
+    },
+    {
+      "id": "q50",
+      "type": "fact",
+      "route": "search",
+      "question": "삼성전기가 유리기판 합작법인에 출자하는 금액은?",
+      "expected": "319,100,000,000원(3,191억원). (가칭) 글라셈 주식회사, 일본 스미토모화학의 자회사 동우화인켐과 합작법인 설립. 2026-07-02 공시.",
+      "answer": "삼성전기가 유리기판 합작법인(글라셈 주식회사, 정정본 기준 회사명)에 출자하는 총 취득금액은 319,100,000,000원(약 3,191억원)입니다[4]. 이 중 현금출자는 2,391억원, 현물출자는 800억원입니다[3]. 취득주식수는 63,820,000주, 취득후 지분비율은 66.2%입니다[4]. 취득예정일(출자금 납입일)은 2026-11-05로 정정되었습니다[4].",
+      "unanswerable": false,
+      "cited": [
+        "20261105800383"
+      ],
+      "trace": [
+        "analyze: route=search companies=['삼성전기'] categories=['equity_acquire']",
+        "retrieve: 5 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 5 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        false
+      ],
+      "fact_rate": 0.5,
+      "citation_hit": false,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "출자금액 319,100,000,000원(3,191억원)이 기대 답변과 일치하고, 현금 2,391억원·현물 800억원, 주식수, 지분율 66.2%, 취득예정일 2026-11-05 정정도 모두 공시 발췌에 있는 내용이다."
+    },
+    {
+      "id": "q51",
+      "type": "fact",
+      "route": "search",
+      "question": "SK하이닉스 청주 생산거점 투자 규모는?",
+      "expected": "7,093,100,000,000원(약 7조 931억원). 글로벌 AI 메모리 수요 대응을 위한 청주 생산거점 확보, 2026-07-22 공시.",
+      "answer": "발췌에 확인되는 청주 생산거점 관련 신규시설투자는 3건입니다. (1) 청주 P&T7 건설: 투자금액 7,093,100,000,000원(약 7.1조원), 이사회결의일 2026-07-22, 투자기간 2025-11-26~2032-12-31이며, 이 결의로 건설 투자 금액이 증액되었다고 기재되어 있으나 증액 전 금액은 확인되지 않습니다 [1]. (2) 청주 M17 건설: 투자금액 19,100,000,000,000원(약 19.1조원), 이사회결의일 2026-08-07, 투자기간 2026-08-07~2031-04-30 [2]. (3) 청주 M15X 건설: 투자금액 5,296,200,000,000원(약 5.3조원), 이사회결의일 2024-04-24, 투자기간 2024-04-24~2026-10-30 [3]. 세 건 모두 투자금액은 투자 진행과정과 경영환경 변화에 따라 변동될 수 있고, 종료일은 예정일입니다 [1][2][3]. 자기자본 대비 비율은 P&T7 5.88%, M17 15.83%, M15X 9.90%입니다 [1][2][3]. 단위는 원입니다.",
+      "unanswerable": false,
+      "cited": [
+        "20260722800829",
+        "20260807800602",
+        "20240424800596"
+      ],
+      "trace": [
+        "analyze: route=search companies=['SK하이닉스'] categories=['facility_investment']",
+        "retrieve: 5 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 10 checked, unverified=['19조원', '26,193,100,000,000']",
+        "retry: 숫자 재확인",
+        "generate (unanswerable=False)",
+        "verify: 6 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "답변이 청주 P&T7 투자금액 7,093,100,000,000원(약 7.1조원), 2026-07-22 결의를 정확히 제시했고 나머지 두 건(M17, M15X)은 구분해 제시해 발췌와 일치하며 혼동하지 않았다."
+    },
+    {
+      "id": "q52",
+      "type": "financial",
+      "route": "financial",
+      "question": "삼전 3분기 영업익 얼마임?",
+      "expected": "2026년 3분기 영업이익 107조 4,405억원 (10/29 잠정실적).",
+      "answer": "삼성전자의 2026년 3분기(7~9월) 연결 영업이익은 107,440,482,000,000원(약 107조 4,405억원)입니다[1]. 이는 잠정치를 정정한 값이며, 정정 전 잠정치는 107.40조원이었고 정정 후 107.44조원으로 바뀌었습니다[3]. 연결 기준 표에서도 영업이익 당해실적은 1,074,405억원(단위: 억원)으로 나옵니다[5]. 전년 동기는 12,166,062,000,000원(약 12조 1,661억원)으로 +783.1%, 직전 분기는 89,492,412,000,000원(약 89조 4,924억원)으로 +20.1%입니다[1]. 이 수치는 외부감사가 끝나기 전의 잠정치이므로 확정치와 다를 수 있습니다[5].",
+      "unanswerable": false,
+      "cited": [
+        "20261116001482",
+        "20261029800099",
+        "20261029800087"
+      ],
+      "trace": [
+        "analyze: route=financial companies=['삼성전자'] categories=['earnings_prelim']",
+        "financial: 1 blocks",
+        "retrieve: 5 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 9 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true
+      ],
+      "fact_rate": 1,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "모델은 삼성전자의 2026년 3분기 영업이익을 107조 4,405억원으로 정확히 답했고, 정정 내용과 전년 동기·직전 분기 비교 수치도 모두 공시 발췌와 일치한다."
+    },
+    {
+      "id": "q53",
+      "type": "trap",
+      "route": "search",
+      "question": "하닉 자사주 소각 몇 주 함?",
+      "expected": "정정 후 23,693,272주 (8/19 최초 결정은 24,070,000주 → 10/26 기재정정). 소각예정금액 40,004,340,000,000원(약 40조원).",
+      "answer": "가장 최근 정정본 기준으로 2026년 8월 19일 이사회 결의에 따른 자사주 소각 수량은 보통주 23,693,272주입니다[5]. 이 수량은 취득기간 중 주가 변동에 따라 원공시의 24,070,000주에서 변경된 것입니다[3][2]. 같은 소각 건의 소각 예정일은 2026-11-05로 공시되었습니다[5]. 별도로 2026년 1월 28일 이사회 결의 건으로 보통주 15,300,000주를 소각 예정일 2026-02-09로 공시한 내역이 있습니다[1]. 다만 발췌문에는 실제 소각 완료 여부가 없어, 위 수량은 공시상 예정 수량으로 보는 것이 맞습니다.",
+      "unanswerable": false,
+      "cited": [
+        "20261026800524",
+        "20260819800340",
+        "20260128800616"
+      ],
+      "trace": [
+        "analyze: route=search companies=['SK하이닉스'] categories=['stock_cancel']",
+        "retrieve: 5 hits (조건: full)",
+        "generate (unanswerable=False)",
+        "verify: 3 checked, unverified=[]"
+      ],
+      "fact_hits": [
+        true,
+        false
+      ],
+      "fact_rate": 0.5,
+      "citation_hit": true,
+      "correctness": "correct",
+      "hallucination": false,
+      "refused": false,
+      "over_refusal": false,
+      "judge_reason": "정정 후 수량 23,693,272주와 최초 24,070,000주를 정확히 제시했고 공시 발췌와 일치하며, 소각예정금액은 질문이 묻지 않아 생략해도 무방하다."
+    }
+  ]
+}

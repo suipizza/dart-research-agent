@@ -1,5 +1,6 @@
 """답변 평가: 골드 질문마다 답변을 생성하고 채점한다.
 
+    uv run python -m eval.answers --system agent --label v1                       # 4단계 에이전트
     uv run python -m eval.answers --model haiku --label baseline --limit 5      # 시험 실행
     uv run python -m eval.answers --model haiku --label baseline                # dev 전체
     uv run python -m eval.answers --set test --model haiku --label final        # test (전체 점수만)
@@ -25,16 +26,27 @@ from eval.judge import JUDGE_MODEL, citation_hit, key_fact_hits, llm_judge
 from eval.retrieval import EVAL_DIR, RESULTS, SETS, load_gold
 
 
-def evaluate_one(q: dict, model: str, gen_usage: Usage, judge_usage: Usage) -> dict:
-    a = answer_question(q["question"], model=model)
+def generate(question: str, model: str, system: str):
+    """(답변 객체, 채점자에게 보여줄 근거 텍스트, 흐름 기록)"""
+    if system == "agent":
+        from app.agent.graph import run_agent
+
+        r = run_agent(question, model=model)
+        return r, r.evidence_text, r.trace
+    a = answer_question(question, model=model)
+    return a, format_context(a.hits), []
+
+
+def evaluate_one(
+    q: dict, model: str, gen_usage: Usage, judge_usage: Usage, system: str = "rag"
+) -> dict:
+    a, context, trace = generate(q["question"], model, system)
     gen_usage.input_tokens += a.usage.input_tokens
     gen_usage.output_tokens += a.usage.output_tokens
     gen_usage.cost_usd += a.usage.cost_usd
 
     facts = key_fact_hits(a.answer, q["key_facts"])
-    v = llm_judge(
-        q["question"], q["answer"], q.get("note"), a.answer, format_context(a.hits), judge_usage
-    )
+    v = llm_judge(q["question"], q["answer"], q.get("note"), a.answer, context, judge_usage)
     should_refuse = q["route"] == "refuse"
     return {
         "id": q["id"],
@@ -45,7 +57,7 @@ def evaluate_one(q: dict, model: str, gen_usage: Usage, judge_usage: Usage) -> d
         "answer": a.answer,
         "unanswerable": a.unanswerable,
         "cited": a.cited_rcept_nos,
-        "context": a.context_rcept_nos,
+        "trace": trace,
         "fact_hits": facts,
         "fact_rate": statistics.mean(facts) if facts else None,
         "citation_hit": citation_hit(a.cited_rcept_nos, q["gold"]),
@@ -89,7 +101,7 @@ def print_table(summary: dict) -> None:
         "fact_rate",
         "citation_hit",
         "hallucination",
-        "refusal_ok",
+        "over_refusal",
     ]
     print("| 유형 | n | " + " | ".join(cols) + " |")
     print("|" + "---|" * (len(cols) + 2))
@@ -98,7 +110,14 @@ def print_table(summary: dict) -> None:
         print(f"| {name} | {s['n']} | " + " | ".join(cells) + " |")
 
 
-def run(model_key: str, label: str, which: str, limit: int | None, ids: list[str] | None):
+def run(
+    model_key: str,
+    label: str,
+    which: str,
+    limit: int | None,
+    ids: list[str] | None,
+    system: str = "rag",
+):
     model = MODELS[model_key]
     held_out = which == "test"
     items = load_gold(SETS[which])
@@ -111,7 +130,7 @@ def run(model_key: str, label: str, which: str, limit: int | None, ids: list[str
     rows, errors = [], []
     for i, q in enumerate(items, 1):
         try:
-            rows.append(evaluate_one(q, model, gen_usage, judge_usage))
+            rows.append(evaluate_one(q, model, gen_usage, judge_usage, system))
         except Exception as e:  # 한 문항 실패로 전체 실행을 버리지 않는다
             errors.append({"id": q["id"], "error": str(e)[:300]})
         if not held_out:
@@ -123,6 +142,7 @@ def run(model_key: str, label: str, which: str, limit: int | None, ids: list[str
     record = {
         "label": label,
         "set": which,
+        "system": system,
         "model": model,
         "judge_model": JUDGE_MODEL,
         "created": datetime.now().isoformat(),
@@ -137,10 +157,14 @@ def run(model_key: str, label: str, which: str, limit: int | None, ids: list[str
     if not held_out:
         record["rows"] = rows
     RESULTS.mkdir(exist_ok=True)
-    out = RESULTS / f"{datetime.now():%Y%m%d-%H%M}_answers_{which}_{model_key}_{label}.json"
+    out = (
+        RESULTS / f"{datetime.now():%Y%m%d-%H%M}_answers_{which}_{system}_{model_key}_{label}.json"
+    )
     out.write_text(json.dumps(record, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
 
-    print(f"\n[{which} / {model_key} / {label}] 채점 {len(rows)}개, 실패 {len(errors)}개")
+    print(
+        f"\n[{which} / {system} / {model_key} / {label}] 채점 {len(rows)}개, 실패 {len(errors)}개"
+    )
     if summary:
         print_table(summary)
     total = gen_usage.cost_usd + judge_usage.cost_usd
@@ -155,13 +179,16 @@ def run(model_key: str, label: str, which: str, limit: int | None, ids: list[str
 
 def main() -> None:
     p = argparse.ArgumentParser(description="답변 평가")
+    p.add_argument(
+        "--system", choices=["rag", "agent"], default="rag", help="기본 RAG 또는 에이전트"
+    )
     p.add_argument("--model", choices=list(MODELS), default="haiku")
     p.add_argument("--label", default="run")
     p.add_argument("--set", dest="which", choices=list(SETS), default="dev")
     p.add_argument("--limit", type=int)
     p.add_argument("--ids", nargs="*", help="특정 문항만 (예: q01 q30)")
     args = p.parse_args()
-    run(args.model, args.label, args.which, args.limit, args.ids)
+    run(args.model, args.label, args.which, args.limit, args.ids, args.system)
 
 
 if __name__ == "__main__":
