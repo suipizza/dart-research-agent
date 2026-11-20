@@ -47,6 +47,25 @@ uv run python -m app.rag.search "SK하이닉스 2026년 3분기 영업이익"   
 - **회사 필터**: 질문에서 회사명(별칭 포함)을 찾으면 `WHERE corp_code = ...`로 고정한 뒤 그 안에서 코사인 거리순 정렬. 벡터 검색은 '삼성전자'와 '삼성SDI'를 잘 구분하지 못한다.
 - **인덱스**: pgvector HNSW (`vector_cosine_ops`).
 
+## 평가
+
+```bash
+uv run python -m eval.retrieval --label xxx                # 검색 평가 (무료)
+uv run python -m eval.answers --model haiku --label xxx    # 답변 생성 + 채점
+uv run python -m eval.answers --set test --label final     # test 세트: 전체 점수만 출력
+```
+
+- **평가셋**: dev 53문항(개발 중 참고) + test 20문항(보지 않는 세트, 최종 보고용). 정답 숫자는 DART 구조화 API·재무 API·원문 표에서 확인. 유형: 사실 조회, 재무 수치, 목록, 비교, 요약, 함정(날짜·정정·자회사 공시·연결/별도·회계연도), 거절.
+- **채점**: 코드 채점(핵심 숫자 포함, 출처 적중) + LLM 채점(Claude Sonnet 고정: 정답/부분/오답, 환각).
+- **채점기 검증**: 사람이 정의한 판정 기준 4개로 15문항 교차 채점 → LLM 채점과 15/15 일치. 이 과정에서 정답지 오류 2건(정정 후 금액, 분기 vs 누적 영업이익)과 날짜 비교 버그를 찾아 수정.
+
+### 실험 기록
+
+| # | 바꾼 것 | 결과 (dev) | 결론 |
+|---|---|---|---|
+| 0 | 답변 모델: Haiku 5.5 vs Sonnet 5.5 | 정답률 62% vs 68% (53문항 중 3개 차이) | 두 모델이 모두 틀린 7문항은 전부 **검색 실패**. 실험 모델은 Haiku로 고정(비용 약 절반) |
+| 기준선 | 기본 RAG (검색 상위 5개 → 답변) | 검색 hit@1 62%, MRR 0.72 / 답변 정답률 62% (Haiku) | 날짜·공시 종류 무시, 회사명 없는 질문, 회계연도≠공시일에서 실패 |
+
 ## 기술 스택
 
 Python · FastAPI · LangGraph · PostgreSQL + pgvector · Redis · Docker · GitHub Actions · AWS

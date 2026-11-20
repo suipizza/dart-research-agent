@@ -21,6 +21,9 @@ class Settings(BaseSettings):
     # SecretStr이라 로그나 repr에 찍혀도 '**********'로 가려진다.
     dart_api_key: SecretStr
 
+    # LLM 키는 답변 생성·채점에만 필요하다. CI처럼 키가 없는 환경에서도 앱이 뜨도록 선택값으로 둔다.
+    anthropic_api_key: SecretStr | None = None
+
     database_url: str = "postgresql+psycopg://dart:dart@localhost:5432/dart"
     dart_base_url: str = "https://opendart.fss.or.kr/api"
 
