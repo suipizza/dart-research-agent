@@ -28,6 +28,7 @@ dev = [
 ]
 embed = [
     "sentence-transformers>=6.3.0",
+    "torch>=2.15.0",  # 아래 [tool.uv.sources]로 리눅스에서는 CPU 휠을 쓰기 위해 직접 명시
 ]
 
 [tool.ruff]
@@ -55,3 +56,13 @@ default-groups = ["dev", "embed"]
 "eval/judge.py" = ["E501"]
 "app/agent/*.py" = ["E501"]
 "app/api/*.py" = ["E501"]
+
+# Docker(리눅스) 이미지에서는 CPU 전용 PyTorch를 쓴다. 기본 휠은 CUDA 포함이라 수 GB가 더 크다.
+# 맥은 그대로 PyPI 휠(MPS 지원).
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true

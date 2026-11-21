@@ -1,0 +1,19 @@
+# API 이미지에는 pyproject.toml, uv.lock, app/ 만 필요하다.
+.git
+.github
+.venv
+.env
+.env.*
+!.env.example
+**/__pycache__
+.pytest_cache
+.ruff_cache
+data
+eval
+tests
+scripts
+web
+db
+.claude
+.taste-skill
+*.md

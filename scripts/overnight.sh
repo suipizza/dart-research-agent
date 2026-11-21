@@ -25,7 +25,7 @@ exec > >(tee -a "$LOG") 2>&1
 step() { echo; echo "== $(date '+%F %T') $*"; }
 
 step "시작 (로그: $LOG)"
-docker compose up -d --wait
+docker compose up -d --wait postgres redis
 
 step "0/3 A 인덱싱 (머리말만, 2026-11-21 이전 운영 방식)"
 uv run python -m app.rag.index --variant header_only --no-table-header

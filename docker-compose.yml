@@ -1,3 +1,9 @@
+# 전체 실행 (서버·데모):   docker compose up -d --build       → http://localhost
+# 로컬 개발 (DB만):        docker compose up -d postgres redis
+#
+#   caddy :80 ─┬─ /      → web (Next.js)
+#              └─ /api/* → api (FastAPI) ─┬─ postgres (pgvector)
+#                                         └─ redis (캐시·호출 제한)
 services:
   postgres:
     image: pgvector/pgvector:pg17
@@ -7,7 +13,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dart}
       POSTGRES_DB: ${POSTGRES_DB:-dart}
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"  # 이 컴퓨터에서만 접속 (서버에서 외부에 열지 않음)
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./db/init:/docker-entrypoint-initdb.d:ro
@@ -22,7 +28,7 @@ services:
     container_name: dart-redis
     command: ["redis-server", "--appendonly", "yes"]  # 재시작해도 캐시·카운터 유지
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
     volumes:
       - redisdata:/data
     healthcheck:
@@ -31,6 +37,50 @@ services:
       timeout: 3s
       retries: 10
 
+  api:
+    build: .
+    image: dart-research-api
+    container_name: dart-api
+    env_file: .env  # API 키 (이미지에는 들어가지 않는다)
+    environment:
+      # .env의 localhost 주소 대신 컨테이너 이름으로 접속
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-dart}:${POSTGRES_PASSWORD:-dart}@postgres:5432/${POSTGRES_DB:-dart}
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - models:/models  # 임베딩·재순위 모델 (처음 시작할 때 한 번 내려받음)
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  web:
+    build: ./web
+    image: dart-research-web
+    container_name: dart-web
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2.10-alpine
+    container_name: dart-caddy
+    environment:
+      SITE_ADDRESS: ${SITE_ADDRESS:-:80}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddydata:/data
+    depends_on:
+      - web
+      - api
+    restart: unless-stopped
+
 volumes:
   pgdata:
   redisdata:
+  models:
+  caddydata:
