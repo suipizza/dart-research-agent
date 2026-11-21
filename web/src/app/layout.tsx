@@ -1,31 +1,31 @@
 import type { Metadata } from "next";
-import { Literata, Noto_Serif_KR } from "next/font/google";
+import { IBM_Plex_Mono, IBM_Plex_Sans_KR } from "next/font/google";
 import "./globals.css";
 
-// Literata: 라틴 문자와 숫자(표의 금액). 한글 글자가 없어 같은 명조 계열 Noto Serif KR로 받친다.
-const literata = Literata({
-  variable: "--font-latin",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  display: "swap",
-});
-
-const notoSerifKr = Noto_Serif_KR({
-  variable: "--font-hangul",
+// 본문: IBM Plex Sans KR. 숫자·로그·코드: IBM Plex Mono (자릿수가 고르게 정렬된다).
+const sans = IBM_Plex_Sans_KR({
+  variable: "--font-sans",
   weight: ["400", "500", "600"],
   preload: false,
   display: "swap",
 });
 
+const mono = IBM_Plex_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "DART 리서치 — 공시에 묻고, 원문으로 답합니다",
+  title: "DART 공시 리서치",
   description:
-    "코스피 시가총액 상위 44개 기업의 DART 공시를 근거로 답하고, 답변의 숫자를 원문 표와 대조하는 LangGraph 에이전트.",
+    "코스피 상위 44개 기업의 DART 공시를 근거로 답하고, 답변의 숫자를 공시 원문과 대조하는 LangGraph RAG 에이전트.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="ko" className={`${literata.variable} ${notoSerifKr.variable}`}>
+    <html lang="ko" className={`${sans.variable} ${mono.variable}`}>
       <body>{children}</body>
     </html>
   );
