@@ -22,7 +22,7 @@ def build(
     rebuild: bool = False,
     max_chars: int = DEFAULT_MAX_CHARS,
     with_header: bool = True,
-    repeat_table_header: bool = False,
+    repeat_table_header: bool = True,
     variant: str | None = None,
     limit_docs: int | None = None,
 ):
@@ -104,7 +104,9 @@ def main() -> None:
     p.add_argument("--max-chars", type=int, default=DEFAULT_MAX_CHARS)
     p.add_argument("--no-header", action="store_true", help="머리말 없이 (실험용)")
     p.add_argument(
-        "--repeat-table-header", action="store_true", help="잘린 표에 열 이름 반복 (실험용)"
+        "--no-table-header",
+        action="store_true",
+        help="잘린 표에 열 이름을 반복하지 않음 (실험용. 기본은 반복, 6단계 실험 결과)",
     )
     p.add_argument("--variant", help="실험용 테이블(chunks_exp)에 이 이름으로 저장")
     p.add_argument("--limit-docs", type=int, help="문서 수 제한 (시험 실행용)")
@@ -114,7 +116,7 @@ def main() -> None:
         rebuild=args.rebuild,
         max_chars=args.max_chars,
         with_header=not args.no_header,
-        repeat_table_header=args.repeat_table_header,
+        repeat_table_header=not args.no_table_header,
         variant=args.variant,
         limit_docs=args.limit_docs,
     )

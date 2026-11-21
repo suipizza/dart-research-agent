@@ -9,6 +9,7 @@ from datetime import date
 from sqlalchemy import select
 
 from app.agent.analysis import Analysis, earnings_filing_window, parse_date, to_corp_codes
+from app.config import get_settings
 from app.db import session_scope
 from app.models import Company, Financial
 from app.rag.search import Hit, search
@@ -96,7 +97,9 @@ def plan_search(a: Analysis, question: str) -> SearchPlan:
         since=since,
         until=until,
         categories=categories,
-        top_k=max_filings * 4,
+        # 목록은 빠짐없이 모으는 게 핵심이라 후보 청크를 더 넓게 본다(공시 10건 × 8).
+        # 40개일 때는 자회사 공시가 빈자리를 채우고 정작 해당 회사 공시가 후보에 없었다(dev q48).
+        top_k=max_filings * (8 if a.is_list else 4),
         latest=a.latest,
         max_filings=max_filings,
         is_list=a.is_list,
@@ -114,16 +117,28 @@ def relaxed(plan: SearchPlan, step: str) -> SearchPlan:
 
 
 def run_search(plan: SearchPlan) -> list[Hit]:
+    """필터 + 벡터 검색. 재순위를 켜면 후보를 넉넉히 가져와 다시 정렬한 뒤 top_k개만 쓴다.
+
+    목록 질문은 재순위하지 않는다. 재순위는 1위를 정확히 고르는 데 강하지만, 목록은 빠짐없이 모으는 게
+    중요하다. dev에서 재순위가 다른 회사의 비슷한 공시를 위로 올려 목록에서 한 회사가 빠졌다(q48).
+    """
+    s = get_settings()
+    use_rerank = s.rerank and not plan.is_list
+    pool = max(plan.top_k, s.rerank_pool) if use_rerank else plan.top_k
     hits, _ = search(
         plan.query,
-        top_k=plan.top_k,
+        top_k=pool,
         corp_codes=plan.corp_codes,
         since=plan.since,
         until=plan.until,
         categories=plan.categories,
         detect_company=False,  # 회사는 질문 분석 노드가 이미 정했다
     )
-    return hits
+    if use_rerank:
+        from app.rag.rerank import rerank
+
+        hits = rerank(plan.query, hits)
+    return hits[: plan.top_k]
 
 
 # ── v2: 청크 → 공시 단위 근거 ────────────────────────────────────

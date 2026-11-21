@@ -27,15 +27,18 @@ step() { echo; echo "== $(date '+%F %T') $*"; }
 step "시작 (로그: $LOG)"
 docker compose up -d --wait
 
+step "0/3 A 인덱싱 (머리말만, 2026-11-21 이전 운영 방식)"
+uv run python -m app.rag.index --variant header_only --no-table-header
+
 step "1/3 재순위 비교: A, A+R20, A+R"
 uv run python -m eval.experiments --variants A A+R20 A+R
 
 step "2/3 B 인덱싱 (머리말 없음) → 평가"
-uv run python -m app.rag.index --variant no_header --no-header
+uv run python -m app.rag.index --variant no_header --no-header --no-table-header
 uv run python -m eval.experiments --variants B
 
 step "3/3 C 인덱싱 (잘린 표에 열 이름 반복) → 평가"
-uv run python -m app.rag.index --variant table_header --repeat-table-header
+uv run python -m app.rag.index --variant table_header
 uv run python -m eval.experiments --variants C C+R
 
 step "전체 비교표"

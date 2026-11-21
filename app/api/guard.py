@@ -19,7 +19,8 @@ from app.config import get_settings
 
 log = logging.getLogger("api.guard")
 
-AGENT_VERSION = "v2.1"  # 에이전트 로직이 바뀌면 올려서 예전 캐시를 무효화한다
+# 에이전트 로직이 바뀌면 올려서 예전 캐시를 무효화한다. v3: 표 열 이름 반복 인덱스 + 재순위 (2026-11-21)
+AGENT_VERSION = "v3"
 
 
 @lru_cache

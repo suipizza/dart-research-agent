@@ -36,6 +36,11 @@ class Settings(BaseSettings):
     rate_limit_per_ip_daily: int = 20
     rate_limit_global_daily: int = 500
     cache_ttl_seconds: int = 7 * 24 * 3600
+    # 서버 시작 시 임베딩 모델을 미리 불러올지 (첫 질문 지연 방지)
+    preload_embedder: bool = True
+    # 재순위(bge-reranker-v2-m3): 검색 후보 rerank_pool개를 다시 정렬한다. 6단계 실험 결과 적용.
+    rerank: bool = True
+    rerank_pool: int = 40
     dart_base_url: str = "https://opendart.fss.or.kr/api"
 
 

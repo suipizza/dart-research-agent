@@ -9,6 +9,7 @@ GET  /health     서버·DB·Redis 상태
 
 import json
 import logging
+import threading
 from collections.abc import Iterator
 from contextlib import asynccontextmanager
 from datetime import datetime
@@ -20,6 +21,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy import select, text
 
 from app.api import guard
+from app.config import get_settings
 from app.db import session_scope
 from app.llm import EXPERIMENT_MODEL
 from app.models import Company
@@ -55,10 +57,29 @@ def db_ok() -> bool:
         return False
 
 
+def _warm_up() -> None:
+    try:
+        from app.rag.embedder import embed_query
+
+        embed_query("warm up")
+        log.info("embedder ready")
+        if get_settings().rerank:
+            from app.rag import rerank
+
+            rerank.warm_up()
+            log.info("reranker ready")
+    except Exception as e:  # 실패해도 첫 질문에서 다시 불러온다
+        log.warning("embedder warm-up failed: %s", e)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     logging.getLogger("httpx").setLevel(logging.WARNING)  # 요청 URL(키 포함) 로그 방지
+    if get_settings().preload_embedder:
+        # 임베딩·재순위 모델을 미리 불러 둔다. 안 하면 첫 질문이 약 20초 더 걸린다.
+        # 백그라운드에서 해서 서버는 바로 뜬다(/health는 그동안에도 응답).
+        threading.Thread(target=_warm_up, name="embedder-warmup", daemon=True).start()
     yield
     from app import obs
 

@@ -8,9 +8,9 @@
 중간에 멈춘 뒤 다시 실행하면 이미 끝난 버전은 건너뛰고 남은 버전부터 이어서 한다.
 
 버전
-- A    : 운영 인덱스(chunks). 머리말 있음, 약 1,000자.
+- A    : chunks_exp 'header_only' 머리말 있음, 약 1,000자 (2026-11-21까지의 운영 인덱스)
 - B    : chunks_exp 'no_header'    머리말 없음
-- C    : chunks_exp 'table_header' 머리말 + 잘린 표에 열 이름 반복
+- C    : chunks_exp 'table_header' 머리말 + 잘린 표에 열 이름 반복 (현재 운영 인덱스와 같음)
 - A+R  : A에서 40개를 가져와 재순위 모델(bge-reranker-v2-m3, 입력 1,024토큰)로 다시 정렬
 - A+R20: 속도 절충. 상위 20개만, 입력 512토큰 (맥 GPU에서 질문당 약 10초 vs 25초)
 - C+R  : C + 재순위 (C 인덱스가 있을 때)
@@ -38,11 +38,11 @@ CHECKPOINT = RESULTS / "experiments-checkpoint.json"
 RERANK_MODEL = "BAAI/bge-reranker-v2-m3"
 # rerank: None 또는 (다시 정렬할 개수, 입력 최대 토큰)
 VARIANTS = {
-    "A": {"table": "chunks", "rerank": None},
+    "A": {"table": "header_only", "rerank": None},
     "B": {"table": "no_header", "rerank": None},
     "C": {"table": "table_header", "rerank": None},
-    "A+R": {"table": "chunks", "rerank": (40, 1024)},
-    "A+R20": {"table": "chunks", "rerank": (20, 512)},
+    "A+R": {"table": "header_only", "rerank": (40, 1024)},
+    "A+R20": {"table": "header_only", "rerank": (20, 512)},
     "C+R": {"table": "table_header", "rerank": (40, 1024)},
 }
 
