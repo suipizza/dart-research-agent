@@ -869,6 +869,165 @@ tr.bad td {
   color: var(--text-3);
 }
 
+/* 다이어그램: 본문(720px)보다 넓게 펼친다 */
+.diagram {
+  position: relative;
+  left: 50%;
+  width: min(960px, calc(100vw - 40px));
+  transform: translateX(-50%);
+  margin: 18px 0 8px;
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.dg-scroll {
+  overflow-x: auto;
+}
+
+.diagram svg {
+  display: block;
+  width: 100%;
+  min-width: 720px;
+  height: auto;
+}
+
+.diagram figcaption {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--text-3);
+}
+
+.dg-box rect,
+.dg-table rect {
+  fill: var(--bg);
+  stroke: var(--line-strong);
+  stroke-width: 1;
+}
+
+.dg-llm rect {
+  stroke: var(--accent);
+}
+
+.dg-store rect {
+  stroke: #7fb4ff;
+}
+
+.dg-ext rect {
+  stroke-dasharray: 4 3;
+}
+
+.dg-title {
+  fill: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.dg-sub {
+  fill: var(--text-2);
+  font-size: 12px;
+}
+
+.dg-edge path,
+.dg-rel path {
+  fill: none;
+  stroke: var(--text-3);
+  stroke-width: 1.2;
+}
+
+.dg-arrowhead {
+  fill: var(--text-3);
+}
+
+.dg-label {
+  fill: var(--text-2);
+  font-size: 11.5px;
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 4px;
+}
+
+.dg-group {
+  fill: var(--text-3);
+  font-size: 12px;
+}
+
+.dg-sep {
+  stroke: var(--line);
+  stroke-dasharray: 3 4;
+}
+
+.dg-terminal rect {
+  fill: var(--surface-2);
+  stroke: var(--line-strong);
+}
+
+.dg-terminal text {
+  fill: var(--text-2);
+  font-size: 12.5px;
+}
+
+.dg-table line {
+  stroke: var(--line-strong);
+}
+
+.dg-tname {
+  fill: var(--accent);
+  font-family: var(--mono);
+  font-size: 13.5px;
+  font-weight: 500;
+}
+
+.dg-tdesc {
+  fill: var(--text-3);
+  font-size: 11.5px;
+}
+
+.dg-col {
+  fill: var(--text);
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+.dg-colkey {
+  font-weight: 500;
+}
+
+.dg-ctype {
+  fill: var(--text-3);
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
+.dg-card text {
+  fill: var(--text-2);
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
+.dg-key {
+  display: inline-block;
+  width: 14px;
+  height: 10px;
+  margin: 0 4px 0 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  vertical-align: 0;
+}
+
+.dg-key.dg-llm {
+  border-color: var(--accent);
+}
+
+.dg-key.dg-store {
+  border-color: #7fb4ff;
+}
+
+.dg-key.dg-ext {
+  border-style: dashed;
+}
+
 /* ── 반응형 ──────────────────────────────────────────── */
 
 @media (max-width: 560px) {
@@ -912,6 +1071,11 @@ tr.bad td {
 
   .doc-head h1 {
     font-size: 25px;
+  }
+
+  .diagram {
+    width: calc(100vw - 32px);
+    padding: 14px;
   }
 
   .result-value {

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { AgentFlow, Erd, SystemDiagram } from "@/components/Diagrams";
 import TopBar, { REPO } from "@/components/TopBar";
 
 export const metadata: Metadata = {
@@ -106,6 +107,15 @@ export default function About() {
         </section>
 
         <section>
+          <h2>시스템 구성</h2>
+          <p>
+            질문은 FastAPI를 거쳐 LangGraph 에이전트가 처리하고, 공시 데이터는 DART에서 따로 수집해 Postgres에 쌓습니다.
+            임베딩과 재순위 모델은 서버에서 직접 돌리고, 외부로 나가는 호출은 Claude API뿐입니다.
+          </p>
+          <SystemDiagram />
+        </section>
+
+        <section>
           <h2>동작 방식</h2>
           <ol className="flow">
             {FLOW.map(([name, desc]) => (
@@ -116,9 +126,10 @@ export default function About() {
             ))}
           </ol>
           <p>
-            검증에서 근거에 없는 숫자가 나오면 답변을 다시 쓰고, 공시를 못 찾으면 조건을 풀어 다시 검색합니다(최대 2회).
-            투자 판단을 묻는 질문은 답하지 않습니다.
+            실제 LangGraph 그래프는 아래와 같습니다. 검증에서 근거에 없는 숫자가 나오면 답변을 다시 쓰고, 공시를 못 찾으면
+            조건을 풀어 다시 검색합니다. 투자 판단을 묻는 질문은 바로 거절합니다.
           </p>
+          <AgentFlow />
         </section>
 
         <section>
@@ -183,6 +194,7 @@ export default function About() {
               <dd>{STACK.join(", ")}</dd>
             </div>
           </dl>
+          <Erd />
           <details className="companies">
             <summary>수집 기업 44개 보기</summary>
             <p>{COMPANIES.join(", ")}</p>
