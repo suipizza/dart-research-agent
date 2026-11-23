@@ -4,6 +4,10 @@
 
 > 코스피 시가총액 상위 44개 기업 · 2024년 이후 공시 21,644건 · 원문 2,075건 · 평가 질문 73개(직접 구축)
 
+![데모: 질문 → 단계별 처리 → 답변의 숫자를 원문과 대조 → DART 원문 확인](docs/demo.gif)
+
+<sub>AWS EC2(서울)에 배포해 녹화한 화면입니다. 대기 구간은 2배속.</sub>
+
 ## 결과
 
 | 지표 | 기본 RAG | 이 에이전트 |
@@ -143,6 +147,7 @@ erDiagram
 | 관측 | **Langfuse** | 질문별 단계·토큰·비용 추적 |
 | 화면 | **Next.js** | 채팅 UI, 숫자를 누르면 원문 줄 표시 |
 | 인프라 | **Docker Compose**, **Caddy**, **GitHub Actions** | 한 줄 실행, HTTPS 프록시, CI(ruff·pytest 88개) |
+| 배포 | **AWS EC2** (t3.large, 서울) | Ubuntu 24.04 + Docker, 80번 포트만 공개, DB는 덤프로 이전 |
 
 ## 빠른 실행
 
@@ -170,6 +175,7 @@ caddy :80 ─┬─ /      → web  (Next.js standalone)
 - **보안**: API 키는 `.env`에서 실행 시점에만 주입하고 이미지에는 넣지 않는다(`.dockerignore`). Postgres·Redis 포트는 `127.0.0.1`에만 열어 서버 밖에서 접속할 수 없다.
 - **데이터 옮기기**: `./scripts/db_dump.sh`로 로컬 DB를 35MB 파일 하나로 내보내고, 서버에서 `db_restore.sh`로 복원한다(실험용 청크 데이터는 제외).
 - 로컬 CPU(Docker) 기준 새 질문 응답 약 25초, 그중 검색+재순위 약 17초.
+- **EC2 배포** (t3.large, 2 vCPU · 8GB): Docker 설치 → `git clone` → `.env`와 덤프를 `scp`로 복사(DB 비밀번호는 서버에서 무작위 생성) → `db_restore.sh` → `docker compose up -d --build`. 보안 그룹은 SSH(내 IP)와 HTTP만 열었다. 모델 두 개를 올린 뒤 메모리 여유 5.7GB. 새 질문 응답은 GPU 없는 CPU라 15~55초이고 대부분 재순위 시간이다(정확도를 우선해 유지).
 
 ### 개발 환경
 
